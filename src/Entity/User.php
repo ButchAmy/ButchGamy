@@ -50,12 +50,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Gender = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $CreatedOn = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $UpdatedOn = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -206,30 +200,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGender(?string $Gender): static
     {
         $this->Gender = $Gender;
-
-        return $this;
-    }
-
-    public function getCreatedOn(): ?\DateTimeInterface
-    {
-        return $this->CreatedOn;
-    }
-
-    public function setCreatedOn(\DateTimeInterface $CreatedOn): static
-    {
-        $this->CreatedOn = $CreatedOn;
-
-        return $this;
-    }
-
-    public function getUpdatedOn(): ?\DateTimeInterface
-    {
-        return $this->UpdatedOn;
-    }
-
-    public function setUpdatedOn(\DateTimeInterface $UpdatedOn): static
-    {
-        $this->UpdatedOn = $UpdatedOn;
 
         return $this;
     }
