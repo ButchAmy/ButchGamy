@@ -1,2 +1,2 @@
-# butchgamy
+# ButchGamy
 Eindproject CVO
