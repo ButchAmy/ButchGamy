@@ -47,9 +47,13 @@ class Game
     #[ORM\OneToMany(mappedBy: 'game', targetEntity: Achievement::class, orphanRemoval: true)]
     private Collection $achievements;
 
+    #[ORM\OneToMany(mappedBy: 'game', targetEntity: GameResults::class, orphanRemoval: true)]
+    private Collection $gameResults;
+
     public function __construct()
     {
         $this->achievements = new ArrayCollection();
+        $this->gameResults = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,6 +193,36 @@ class Game
             // set the owning side to null (unless already changed)
             if ($achievement->getGame() === $this) {
                 $achievement->setGame(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GameResults>
+     */
+    public function getGameResults(): Collection
+    {
+        return $this->gameResults;
+    }
+
+    public function addGameResult(GameResults $gameResult): static
+    {
+        if (!$this->gameResults->contains($gameResult)) {
+            $this->gameResults->add($gameResult);
+            $gameResult->setGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGameResult(GameResults $gameResult): static
+    {
+        if ($this->gameResults->removeElement($gameResult)) {
+            // set the owning side to null (unless already changed)
+            if ($gameResult->getGame() === $this) {
+                $gameResult->setGame(null);
             }
         }
 

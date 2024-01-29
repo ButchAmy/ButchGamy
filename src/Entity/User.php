@@ -66,9 +66,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'developer', targetEntity: Game::class, orphanRemoval: true)]
     private Collection $gamesDeveloped;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserAchievement::class, orphanRemoval: true)]
+    private Collection $achievements;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: GameResults::class, orphanRemoval: true)]
+    private Collection $gameResults;
+
     public function __construct()
     {
         $this->gamesDeveloped = new ArrayCollection();
+        $this->achievements = new ArrayCollection();
+        $this->gameResults = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -297,6 +305,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($gamesDeveloped->getDeveloper() === $this) {
                 $gamesDeveloped->setDeveloper(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserAchievement>
+     */
+    public function getAchievements(): Collection
+    {
+        return $this->achievements;
+    }
+
+    public function addAchievement(UserAchievement $achievement): static
+    {
+        if (!$this->achievements->contains($achievement)) {
+            $this->achievements->add($achievement);
+            $achievement->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAchievement(UserAchievement $achievement): static
+    {
+        if ($this->achievements->removeElement($achievement)) {
+            // set the owning side to null (unless already changed)
+            if ($achievement->getUser() === $this) {
+                $achievement->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GameResults>
+     */
+    public function getGameResults(): Collection
+    {
+        return $this->gameResults;
+    }
+
+    public function addGameResult(GameResults $gameResult): static
+    {
+        if (!$this->gameResults->contains($gameResult)) {
+            $this->gameResults->add($gameResult);
+            $gameResult->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGameResult(GameResults $gameResult): static
+    {
+        if ($this->gameResults->removeElement($gameResult)) {
+            // set the owning side to null (unless already changed)
+            if ($gameResult->getUser() === $this) {
+                $gameResult->setUser(null);
             }
         }
 
