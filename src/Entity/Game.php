@@ -19,7 +19,7 @@ class Game
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(length: 511)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]

@@ -36,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilePic = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(length: 511, nullable: true)]
     private ?string $profileBio = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
