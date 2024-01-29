@@ -25,3 +25,7 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###> doctrine migrations ###
+/migrations/
+###< doctrine migrations ###

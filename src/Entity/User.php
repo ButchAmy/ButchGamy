@@ -3,13 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -30,25 +31,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Username = null;
+    private ?string $username = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $ProfilePic = null;
+    private ?string $profilePic = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $ProfileBio = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $FullName = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Country = null;
+    private ?string $profileBio = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $Birthday = null;
+    private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Gender = null;
+    private ?string $gender = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdOn = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updatedOn = null;
+
+    #[ORM\Column]
+    private ?bool $admin = null;
+
+    #[ORM\Column]
+    private ?bool $loginAllowed = null;
+
+    #[ORM\Column]
+    private ?bool $friendAllowed = null;
+
+    #[ORM\Column]
+    private ?bool $messageAllowed = null;
+
+    #[ORM\OneToMany(mappedBy: 'developer', targetEntity: Game::class, orphanRemoval: true)]
+    private Collection $gamesDeveloped;
+
+    public function __construct()
+    {
+        $this->gamesDeveloped = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,84 +143,162 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUsername(): ?string
     {
-        return $this->Username;
+        return $this->username;
     }
 
-    public function setUsername(string $Username): static
+    public function setUsername(string $username): static
     {
-        $this->Username = $Username;
+        $this->username = $username;
 
         return $this;
     }
 
     public function getProfilePic(): ?string
     {
-        return $this->ProfilePic;
+        return $this->profilePic;
     }
 
-    public function setProfilePic(?string $ProfilePic): static
+    public function setProfilePic(?string $profilePic): static
     {
-        $this->ProfilePic = $ProfilePic;
+        $this->profilePic = $profilePic;
 
         return $this;
     }
 
     public function getProfileBio(): ?string
     {
-        return $this->ProfileBio;
+        return $this->profileBio;
     }
 
-    public function setProfileBio(?string $ProfileBio): static
+    public function setProfileBio(?string $profileBio): static
     {
-        $this->ProfileBio = $ProfileBio;
-
-        return $this;
-    }
-
-    public function getFullName(): ?string
-    {
-        return $this->FullName;
-    }
-
-    public function setFullName(?string $FullName): static
-    {
-        $this->FullName = $FullName;
-
-        return $this;
-    }
-
-    public function getCountry(): ?string
-    {
-        return $this->Country;
-    }
-
-    public function setCountry(?string $Country): static
-    {
-        $this->Country = $Country;
+        $this->profileBio = $profileBio;
 
         return $this;
     }
 
     public function getBirthday(): ?\DateTimeInterface
     {
-        return $this->Birthday;
+        return $this->birthday;
     }
 
-    public function setBirthday(?\DateTimeInterface $Birthday): static
+    public function setBirthday(?\DateTimeInterface $birthday): static
     {
-        $this->Birthday = $Birthday;
+        $this->birthday = $birthday;
 
         return $this;
     }
 
     public function getGender(): ?string
     {
-        return $this->Gender;
+        return $this->gender;
     }
 
-    public function setGender(?string $Gender): static
+    public function setGender(?string $gender): static
     {
-        $this->Gender = $Gender;
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getCreatedOn(): ?\DateTimeInterface
+    {
+        return $this->createdOn;
+    }
+
+    public function setCreatedOn(\DateTimeInterface $createdOn): static
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    public function getUpdatedOn(): ?\DateTimeInterface
+    {
+        return $this->updatedOn;
+    }
+
+    public function setUpdatedOn(\DateTimeInterface $updatedOn): static
+    {
+        $this->updatedOn = $updatedOn;
+
+        return $this;
+    }
+
+    public function isAdmin(): ?bool
+    {
+        return $this->admin;
+    }
+
+    public function setAdmin(bool $admin): static
+    {
+        $this->admin = $admin;
+
+        return $this;
+    }
+
+    public function isLoginAllowed(): ?bool
+    {
+        return $this->loginAllowed;
+    }
+
+    public function setLoginAllowed(bool $loginAllowed): static
+    {
+        $this->loginAllowed = $loginAllowed;
+
+        return $this;
+    }
+
+    public function isFriendAllowed(): ?bool
+    {
+        return $this->friendAllowed;
+    }
+
+    public function setFriendAllowed(bool $friendAllowed): static
+    {
+        $this->friendAllowed = $friendAllowed;
+
+        return $this;
+    }
+
+    public function isMessageAllowed(): ?bool
+    {
+        return $this->messageAllowed;
+    }
+
+    public function setMessageAllowed(bool $messageAllowed): static
+    {
+        $this->messageAllowed = $messageAllowed;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Game>
+     */
+    public function getGamesDeveloped(): Collection
+    {
+        return $this->gamesDeveloped;
+    }
+
+    public function addGamesDeveloped(Game $gamesDeveloped): static
+    {
+        if (!$this->gamesDeveloped->contains($gamesDeveloped)) {
+            $this->gamesDeveloped->add($gamesDeveloped);
+            $gamesDeveloped->setDeveloper($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGamesDeveloped(Game $gamesDeveloped): static
+    {
+        if ($this->gamesDeveloped->removeElement($gamesDeveloped)) {
+            // set the owning side to null (unless already changed)
+            if ($gamesDeveloped->getDeveloper() === $this) {
+                $gamesDeveloped->setDeveloper(null);
+            }
+        }
 
         return $this;
     }
