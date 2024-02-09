@@ -20,13 +20,13 @@
 		</svg>
 		<header>
 			{% block header %}
-				<nav class="navbar bg-body-tertiary">
+				<nav class="navbar navbar-expand-lg bg-body-tertiary">
 					<div class="container-fluid">
 						<a class="navbar-brand" href="{{ path('app_homepage') }}">
 							<img src="/assets/images/favicon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
 							ButchGamy
 						</a>
-						<ul class="navbar-nav">
+						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						{% if app.user %}
 							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -50,22 +50,13 @@
 				</nav>
 			{% endblock %}
 		</header>
-		{% block defaultstyles %}
-			<style>
-				.wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-				.wrapper code { background: #F5F5F5; padding: 2px 6px; }
-			</style>
-		{% endblock %}
 		<main class="flex-shrink-0">
         {% block body %}{% endblock %}
 		</main>
-		<footer class="footer bg-body-tertiary fixed-bottom">
+		<footer class="footer mt-auto py-3 bg-body-tertiary fixed-bottom">
 		{% block footer %}
-		<div class="d-flex flex-column flex-sm-row justify-content-between mt-4 mx-3">
-			<p>&copy; 2024 ButchAmy, all rights reserved.</p>
-			<ul class="list-unstyled d-flex">
-				<li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"/></svg></a></li>
-			</ul>
+		<div class="container">
+			<span class="text-body-secondary">&copy; 2024 ButchAmy, all rights reserved.</span>
 		</div>
 		{% endblock %}
 		</footer>
