@@ -1,30 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}ButchGamy - Sign up!{% endblock %}
 
 {% block body %}
-<div class="wrapper">
-    <h1>Register</h1>
 
-    {{ form_errors(registrationForm) }}
+
+
+<div class="container">
+	{{ form_errors(registrationForm) }}
+
+	{% if app.user %}
+		<div class="mb-3">
+			You are already registered as {{ app.user.username }}! Did you want to <a href="{{ path('app_logout') }}">log out</a>?
+		</div>
+	{% else %}
+
+    <h1 class="h3 my-3 font-weight-normal">Sign up now to start playing and sharing games!</h1>
 
     {{ form_start(registrationForm) }}
-
-		<div class="form-group">
-			{{ form_row(registrationForm.username) }}
-		</div>
-		<div class="form-group">
-        {{ form_row(registrationForm.email) }}
-		</div>
-		<div class="form-group">
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-		</div>
-
-        <button type="submit" class="btn btn-primary">Register</button>
+		<p>{{ form_label(registrationForm.username) }}<br>
+		{{ form_widget(registrationForm.username) }}</p>
+		<p>{{ form_label(registrationForm.email) }}<br>
+		{{ form_widget(registrationForm.email) }}</p>
+		<p>{{ form_label(registrationForm.birthday) }} <small>(Optional)</small><br>
+		{{ form_widget(registrationForm.birthday) }}</p>
+		<p>{{ form_label(registrationForm.gender) }} <small>(Optional)</small><br>
+		{{ form_widget(registrationForm.gender) }}</p>
+		<p>{{ form_label(registrationForm.profilePic) }} <small>(Optional)</small><br>
+		{{ form_widget(registrationForm.profilePic) }}</p>
+		<p>{{ form_label(registrationForm.plainPassword.first) }}<br>
+		{{ form_widget(registrationForm.plainPassword.first) }}</p>
+		<p>{{ form_label(registrationForm.plainPassword.second) }}<br>
+		{{ form_widget(registrationForm.plainPassword.second) }}</p>
+		<p><button type="submit" class="btn btn-primary">Register</button></p>
     {{ form_end(registrationForm) }}
-
-
+	{% endif %}
 </div>
 {% endblock %}

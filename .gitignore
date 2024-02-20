@@ -23,5 +23,7 @@
 
 ###> symfony/asset-mapper ###
 ### /public/assets/ ###
+/public/assets/images/users/
+/public/assets/images/games/
 /assets/vendor/
 ###< symfony/asset-mapper ###
