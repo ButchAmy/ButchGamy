@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ButchGamy - Homepage{% endblock %}
+
+{% block body %}
+<div class="container">
+	<ul class="nav nav-tabs my-3">
+		<li class="nav-item">
+			<a class="nav-link active" aria-current="page" href="{{ path('app_homepage_all') }}">All games</a>
+		</li>
+		{% if app.user %}
+		<li class="nav-item">
+				<a class="nav-link" href="{{ path('app_homepage') }}">Friends' games</a>
+		</li>
+		{% endif %}
+	</ul>
+	<div class="container text-center">
+		<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+		{% for game in games %}
+			<div class="col"><img class="img-fluid" src="{{ game.image }}"><h3><a href="{{ game.url }}">{{ game.title }}</a></h3></div>
+        {% else %}
+            <div class="col">There's no games here yet but there will be</div>
+        {% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}

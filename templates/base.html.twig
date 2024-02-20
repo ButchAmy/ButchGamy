@@ -33,7 +33,7 @@
 									{{ app.user.username }}
 								</a>
 								<ul class="dropdown-menu">
-									<li><a class="dropdown-item" href="#">My profile</a></li>
+									<li><a class="dropdown-item" href="{{ path('app_user_show', {'id': app.user.id}) }}">My profile</a></li>
 									<li><a class="dropdown-item" href="#">My friends</a></li>
 									<li><a class="dropdown-item" href="#">My games</a></li>
 									<li><hr class="dropdown-divider"></li>

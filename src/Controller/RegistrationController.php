@@ -47,7 +47,7 @@ class RegistrationController extends AbstractController
                 } catch (FileException $e) {
                     // ... handle exception if something happens during file upload
                 }
-                $user->setProfilePic('assets/images/users/' . $filename);
+                $user->setProfilePic('../assets/images/users/' . $filename);
 			};
 			// store creation and update time
 			$user->setCreatedOn(new DateTimeImmutable('now'));
