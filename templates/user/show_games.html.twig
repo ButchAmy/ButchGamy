@@ -13,13 +13,13 @@
 			{% endif %}
 			<span>
 				<span class="h1 align-bottom">{{ user.username }}</span>
-				{% if app.user.id == user.id%}
+				{% if app.user == user %}
 					<a href="{{ path('app_user_edit', {'id': user.id}) }}"><button class="btn btn-sm btn-primary align-bottom">Edit profile</button></a>
 				{% endif %}
 				{% if app.user.admin %}
 					<a href="{{ path('app_user_edit_admin', {'id': user.id}) }}"><button class="btn btn-sm btn-primary align-bottom">Edit permissions</button></a>
 				{% endif %}
-				{% if app.user.id != user.id %}
+				{% if app.user != user %}
 					<button class="btn btn-sm btn-primary align-bottom">Send friend request</button>
 				{% endif %}
 			</span>
@@ -61,10 +61,13 @@
 		<div class="container text-center">
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
 			{% for game in games %}
-				<div class="col"><img class="img-fluid" src="{{ game.image }}"><h3><a href="{{ game.url }}">{{ game.title }}</a></h3></div>
+				<div class="col"><img class="img-fluid" src="{{ game.image }}"><h3><a href="{{ path('app_game_show', {'id': game.id}) }}">{{ game.title }}</a></h3></div>
         	{% else %}
-            	<div class="col">No games here yet!</div>
+            	<div class="col d-flex justify-content-center align-items-center">No games here yet!</div>
         	{% endfor %}
+			{% if app.user == user %}
+				<div class="col d-flex justify-content-center align-items-center"><a href="{{ path('app_game_new') }}"><button class="btn btn-secondary">Create new game?</button></a></div>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}

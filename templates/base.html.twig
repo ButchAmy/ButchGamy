@@ -35,7 +35,6 @@
 								<ul class="dropdown-menu">
 									<li><a class="dropdown-item" href="{{ path('app_user_show', {'id': app.user.id}) }}">My profile</a></li>
 									<li><a class="dropdown-item" href="#">My friends</a></li>
-									<li><a class="dropdown-item" href="#">My games</a></li>
 									<li><hr class="dropdown-divider"></li>
 									<li><a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a></li>
 								</ul>
@@ -56,7 +55,7 @@
 				</nav>
 			{% endblock %}
 		</header>
-		<main class="flex-shrink-0">
+		<main class="flex-shrink-0 pb-5">
         {% block body %}{% endblock %}
 		</main>
 		<footer class="footer mt-auto py-3 bg-body-tertiary fixed-bottom">

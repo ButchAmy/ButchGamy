@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% import "macros.html.twig" as macros %}
+
+{% block title %}ButchGamy - {{ game.title }}{% endblock %}
+
+{% block body %}
+	<div class="container my-3">
+		<div><a href="{{ path('app_homepage_all') }}">Back to index</a></div>
+		<p class="my-3">
+			<img src="{{ game.image }}" height="215px">
+		</p>
+		<h1>
+			{{ game.title }}
+			{% if app.user == developer or app.user.admin%}
+				<a href="{{ path('app_game_edit', {'id': game.id}) }}"><button class="btn btn-sm btn-primary">Edit game</button></a>
+			{% endif %}
+		</h1>
+		<table class="table">
+			<tbody>
+				<tr>
+					<th>Release date:</th>
+					<td>{{ game.createdOn ? game.createdOn|date('F j, Y') : '' }}</td>
+				</tr>
+				<tr>
+					<th>Developer:</th>
+					<td><a href="{{ path('app_user_show', {'id': developer.id}) }}">{{ developer.username }}</a></td>
+				</tr>
+				<tr>
+					<td colspan="2">{{ game.description ? game.description : '<em>This space intentionally left blank.</em>' }}</td>
+				</tr>
+				<tr>
+					<td colspan="2"><a href={{ game.url }}>
+						<button class="btn btn-lg btn-primary">Click here to play!</button></a>
+						<small class="align-bottom"><em>(WARNING: This button will send you to an external website.)</em></small>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<ul class="nav nav-tabs my-3">
+			<li class="nav-item">
+				<a class="nav-link" href="{{ path('app_game_show_results', {'id': game.id}) }}">Leaderboard</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link active" aria-current="page" href="{{ path('app_game_show_stats', {'id': game.id}) }}">Stats</a>
+			</li>
+		</ul>
+		<div class="d-flex justify-content-center" id="div_chart"></div>
+	</div>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        {{ gc_draw(scoreChart, 'div_chart') }}
+    </script>
+{% endblock %}

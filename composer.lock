@@ -4,8 +4,65 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "838f369c8c8229d7a82908010142d978",
+    "content-hash": "dff831798f319a4d7a7e30900df3aaa4",
     "packages": [
+        {
+            "name": "cmen/google-charts-bundle",
+            "version": "6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cmen/CMENGoogleChartsBundle.git",
+                "reference": "5f576b68ff60c40884f2e61b68dbf08e26119df0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cmen/CMENGoogleChartsBundle/zipball/5f576b68ff60c40884f2e61b68dbf08e26119df0",
+                "reference": "5f576b68ff60c40884f2e61b68dbf08e26119df0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.4",
+                "symfony/config": "^5.4 || ^6.0 || ^7.0",
+                "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
+                "symfony/http-kernel": "^5.4 || ^6.0 || ^7.0",
+                "twig/twig": "^2.13 | ^3.0.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.4",
+                "phpstan/phpstan": "^1.2",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "CMEN\\GoogleChartsBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christophe Meneses"
+                }
+            ],
+            "description": "This Bundle provides a Twig extension and PHP objects to display Google charts in your Symfony application.",
+            "keywords": [
+                "chart",
+                "charts",
+                "google",
+                "graph",
+                "graphs",
+                "map"
+            ],
+            "support": {
+                "issues": "https://github.com/cmen/CMENGoogleChartsBundle/issues",
+                "source": "https://github.com/cmen/CMENGoogleChartsBundle/tree/6.0.0"
+            },
+            "time": "2024-01-08T15:37:00+00:00"
+        },
         {
             "name": "composer/semver",
             "version": "3.4.0",

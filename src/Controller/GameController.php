@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Game;
 use App\Form\GameType;
 use App\Repository\GameRepository;
+use App\Repository\GameResultsRepository;
+use CMEN\GoogleChartsBundle\GoogleCharts\Charts\LineChart;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class GameController extends AbstractController
 {
     #[Route('/', name: 'app_game_index', methods: ['GET'])]
-    public function index(GameRepository $gameRepository): Response
+    public function index(): Response
     {
-        return $this->render('game/index.html.twig', [
-            'games' => $gameRepository->findAll(),
-        ]);
+		return $this->redirectToRoute('app_homepage');
     }
 
     #[Route('/new', name: 'app_game_new', methods: ['GET', 'POST'])]
@@ -43,10 +43,41 @@ class GameController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_game_show', methods: ['GET'])]
-    public function show(Game $game): Response
+	#[Route('/{id}/leaderboard', name: 'app_game_show_results', methods: ['GET'])]
+    public function show(Game $game) : Response
     {
+		$sort = 'score';
+		if (isset($_GET['sort'])) {
+			$sort = htmlspecialchars($_GET['sort']);
+		};
         return $this->render('game/show.html.twig', [
             'game' => $game,
+			'developer' => $game->getDeveloper(),
+			'gameResults' => $game->getGameResults(),
+			'sort' => $sort,
+        ]);
+    }
+
+	#[Route('/{id}/stats', name: 'app_game_show_stats', methods: ['GET'])]
+    public function show_stats(Game $game): Response
+    {
+		$scoreChartData = [
+			['Time', 'Score', ['role' => 'annotation']],
+			[$game->getCreatedOn(), 0, null],
+		];
+		foreach ($game->getGameResults() as $gameResult) {
+			$scoreChartData[] = [$gameResult->getAchievedOn(), $gameResult->getScore(), $gameResult->getUser()->getUsername()];
+		};
+		$scoreChart = new LineChart();
+		$scoreChart->getData()->setArrayToDataTable($scoreChartData);
+		$scoreChart->getOptions()->setTitle('Score History');
+		$scoreChart->getOptions()->setHeight(500);
+		$scoreChart->getOptions()->setWidth(900);
+		$scoreChart->getOptions()->setPointsVisible(true);
+        return $this->render('game/show_stats.html.twig', [
+            'game' => $game,
+			'developer' => $game->getDeveloper(),
+			'scoreChart' => $scoreChart,
         ]);
     }
 
