@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ButchGamy - Users{% endblock %}
+
+{% block body %}
+	<div class="container my-3">
+		<form class="row">
+			<div class="col">
+				<label class="visually-hidden" for="filter">Filter</label>
+				<input type="search" name="filter" id="filter" class="form-control" value={{ filter }}>
+			</div>
+			<div class="col-auto">
+				<button type="submit" class="btn btn-primary">Filter</button>
+			</div>
+		</form>
+    	<p class="container text-center">
+			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+			{% for user in users %}
+				<div class="col">
+					{% if user.profilePic %}
+						<img src="{{ asset(user.profilePic) }}" height="50px" width="50px">
+					{% else %}
+						<img src="../assets/images/default.webp" height="50px" width="50px">
+					{% endif %}
+					<span class="h1 align-bottom"><a href="{{ path('app_user_show', {'id': user.id}) }}">{{ user.username }}</a></span>
+				</div>
+        	{% else %}
+            	<div class="col">No users matched your filter.</div>
+        	{% endfor %}
+		</p>
+	</div>
+{% endblock %}

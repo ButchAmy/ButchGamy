@@ -28,12 +28,9 @@ class Achievement
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\OneToMany(mappedBy: 'achievement', targetEntity: UserAchievement::class, orphanRemoval: true)]
-    private Collection $achievers;
-
     public function __construct()
     {
-        $this->achievers = new ArrayCollection();
+		
     }
 
     public function getId(): ?int
@@ -85,36 +82,6 @@ class Achievement
     public function setImage(?string $image): static
     {
         $this->image = $image;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UserAchievement>
-     */
-    public function getAchievers(): Collection
-    {
-        return $this->achievers;
-    }
-
-    public function addAchiever(UserAchievement $achiever): static
-    {
-        if (!$this->achievers->contains($achiever)) {
-            $this->achievers->add($achiever);
-            $achiever->setAchievement($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAchiever(UserAchievement $achiever): static
-    {
-        if ($this->achievers->removeElement($achiever)) {
-            // set the owning side to null (unless already changed)
-            if ($achiever->getAchievement() === $this) {
-                $achiever->setAchievement(null);
-            }
-        }
 
         return $this;
     }

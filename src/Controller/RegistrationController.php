@@ -32,10 +32,10 @@ class RegistrationController extends AbstractController
                 )
             );
 			// handle profile picture
-				/** @var UploadedFile $brochureFile */
+				/** @var UploadedFile $profilePicFile */
 				$profilePicFile = $form->get('profilePic')->getData();
-				// this condition is needed because the 'brochure' field is not required
-            	// so the PDF file must be processed only when a file is uploaded
+				// this condition is needed because the 'profile pic' field is not required
+            	// so the file must be processed only when a file is uploaded
             	if ($profilePicFile) {
 					$filename = uniqid().'.'.$profilePicFile->guessExtension();
                 // Move the file to the public assets directory
@@ -47,7 +47,7 @@ class RegistrationController extends AbstractController
                 } catch (FileException $e) {
                     // ... handle exception if something happens during file upload
                 }
-                $user->setProfilePic('../assets/images/users/' . $filename);
+                $user->setProfilePic('assets/images/users/' . $filename);
 			};
 			// store creation and update time
 			$user->setCreatedOn(new DateTimeImmutable('now'));
