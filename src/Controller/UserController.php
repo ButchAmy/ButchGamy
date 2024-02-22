@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\FriendRequest;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Form\UserPermissionsType;
 use DateTimeImmutable;
 use App\Repository\UserRepository;
+use App\Repository\FriendRequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -33,40 +35,53 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-	#[Route('/{id}/games', name: 'app_user_show_games', methods: ['GET'])]
-    public function show_games(User $user): Response
+    #[Route('/{id}', name: 'app_user_show', methods: ['GET', 'POST'])]
+	#[Route('/{id}/games', name: 'app_user_show_games', methods: ['GET', 'POST'])]
+    public function show_games(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager): Response
     {
+		if (isset($_POST["request"])) {
+			$this->handleResponse($user, $friendRequestRepository, $entityManager, $_POST["request"]);
+		}
+
         return $this->render('user/show_games.html.twig', [
             'user' => $user,
+			'friendStatus' => $this->friendStatus($user, $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
 			'games' => $user->getGamesDeveloped(),
         ]);
     }
 
-	#[Route('/{id}/achievements', name: 'app_user_show_achievements', methods: ['GET'])]
-	public function show_achievements(User $user): Response
+	#[Route('/{id}/achievements', name: 'app_user_show_achievements', methods: ['GET', 'POST'])]
+	public function show_achievements(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager): Response
     {
+		if (isset($_POST["request"])) {
+			$this->handleResponse($user, $friendRequestRepository, $entityManager, $_POST["request"]);
+		}
+
         return $this->render('user/show_achievements.html.twig', [
             'user' => $user,
-			'games' => $user->getGamesDeveloped(),
+			'friendStatus' => $this->friendStatus($user, $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
+			// 'achievements' => $user->getAchievements(),
         ]);
     }
 
-	#[Route('/{id}/stats', name: 'app_user_show_stats', methods: ['GET'])]
-	public function show_stats(User $user): Response
+	#[Route('/{id}/stats', name: 'app_user_show_stats', methods: ['GET', 'POST'])]
+	public function show_stats(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager): Response
     {
+		if (isset($_POST["request"])) {
+			$this->handleResponse($user, $friendRequestRepository, $entityManager, $_POST["request"]);
+		}
+
         return $this->render('user/show_stats.html.twig', [
             'user' => $user,
-			'games' => $user->getGamesDeveloped(),
+			'friendStatus' => $this->friendStatus($user, $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
+			'gameResults' => $user->getGameResults(),
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-		/** @var $appUser User */
-		$appUser = $this->getUser();
-		if ($appUser->getId() != $user->getId()) {
+		if ($this->getUser() != $user) {
 			throw $this->createAccessDeniedException('You are not authorized to edit this profile!');
 		}
 
@@ -145,4 +160,41 @@ class UserController extends AbstractController
             'userForm' => $form->createView(),
         ]);
     }
+
+	public function friendStatus(User $user, FriendRequestRepository $friendRequestRepository): int
+	{
+		if (in_array($this->getUser(), $user->getFriends()->toArray())) {
+			return 3;
+		}
+		if ($friendRequestRepository->findBy([ 'userA' => $user, 'userB' => $this->getUser() ])) {
+			return 2;
+		}
+		if ($friendRequestRepository->findBy([ 'userA' => $this->getUser(), 'userB' => $user ])) {
+			return 1;
+		}
+		return 0;
+	}
+
+	public function handleResponse(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, string $response): static
+	{
+		if ($response == "send") {
+			if (!$friendRequestRepository->findBy([ 'userA' => $this->getUser(), 'userB' => $user ])) {
+				$friendRequest = new FriendRequest();
+				$friendRequest->setUserA($this->getUser());
+				$friendRequest->setUserB($user);
+				$friendRequest->setRequestedOn(new DateTimeImmutable('now'));
+				$friendRequest->setAccepted(false);
+				$entityManager->persist($friendRequest);
+			}
+		} elseif ($response == "accept") {
+			$entityManager->getRepository(FriendRequest::class)->findOneBy([ 'userA' => $user, 'userB' => $this->getUser() ])->setAccepted(true);
+			$entityManager->getRepository(FriendRequest::class)->findOneBy([ 'userA' => $user, 'userB' => $this->getUser() ])->getUserA()->addFriend($this->getUser());
+			$entityManager->getRepository(FriendRequest::class)->findOneBy([ 'userA' => $user, 'userB' => $this->getUser() ])->getUserB()->addFriend($user);
+		} elseif ($response == "refuse") {
+			$entityManager->remove($friendRequestRepository->findOneBy([ 'userA' => $user, 'userB' => $this->getUser() ]));
+		}
+		$entityManager->flush();
+
+		return $this;
+	}
 }

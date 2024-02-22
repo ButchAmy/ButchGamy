@@ -1,11 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Game{% endblock %}
+{% block title %}ButchGamy - New game{% endblock %}
 
 {% block body %}
-    <h1>Create new Game</h1>
+<div class="container">
+	{{ form_errors(gameForm) }}
+    
+	<h1 class="h3 my-3 font-weight-normal">Create new game</h1>
 
-    {{ include('game/_form.html.twig') }}
+	{{ form_start(gameForm) }}
+		<p>{{ form_label(gameForm.title) }}<br>
+		{{ form_widget(gameForm.title) }}</p>
+		<p>{{ form_label(gameForm.image) }} <small>(Recommended: 460x215)</small><br>
+		{{ form_widget(gameForm.image) }}</p>
+		<p>{{ form_label(gameForm.description) }} <small>(Optional)</small><br>
+		{{ form_widget(gameForm.description) }}</p>
+		<p>{{ form_label(gameForm.url) }} <small>(See API page for more info)</small><br>
+		{{ form_widget(gameForm.url) }}</p>
+		<p>{{ form_label(gameForm.public) }}
+		{{ form_widget(gameForm.public) }} <small>(Private games are still visible to friends)</small></p>
+		<p><button type="submit" class="btn btn-primary">Create</button></p>
+    {{ form_end(gameForm) }}
+</div>
 
-    <a href="{{ path('app_game_index') }}">back to list</a>
 {% endblock %}

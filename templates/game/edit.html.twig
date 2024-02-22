@@ -1,13 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Game{% endblock %}
+{% block title %}ButchGamy - Editing {{ game.title }}{% endblock %}
 
 {% block body %}
-    <h1>Edit Game</h1>
+<div class="container">
+	{{ form_errors(gameForm) }}
+    
+	<h1 class="h3 my-3 font-weight-normal">Editing {{ game.title }}</h1>
 
-    {{ include('game/_form.html.twig', {'button_label': 'Update'}) }}
+	{{ form_start(gameForm) }}
+		<p>{{ form_label(gameForm.title) }}<br>
+		{{ form_widget(gameForm.title) }}</p>
+		<p>{{ form_label(gameForm.image) }} <small>(Recommended: 460x215)</small><br>
+		{{ form_widget(gameForm.image) }}</p>
+		<p>{{ form_label(gameForm.description) }} <small>(Optional)</small><br>
+		{{ form_widget(gameForm.description) }}</p>
+		<p>{{ form_label(gameForm.url) }} <small>(See API page for more info)</small><br>
+		{{ form_widget(gameForm.url) }}</p>
+		<p><label for="apiKey">API key</label> <small>(Read-only)</small><br>
+		<input id="apiKey" type="text" value="{{ game.apiKey }}" readonly></p>
+		<p>{{ form_label(gameForm.public) }}
+		{{ form_widget(gameForm.public) }} <small>(Private games are still visible to friends)</small></p>
+		<p><button type="submit" class="btn btn-primary">Update</button></p>
+    {{ form_end(gameForm) }}
+	<form method="post" action="{{ path('app_game_delete', {'id': game.id}) }}" onsubmit="return confirm('Are you SURE you want to delete this game? This CANNOT be undone.');">
+		<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ game.id) }}">
+		<button class="btn btn-danger">Delete</button>
+	</form>
 
-    <a href="{{ path('app_game_index') }}">back to list</a>
+</div>
 
-    {{ include('game/_delete_form.html.twig') }}
 {% endblock %}

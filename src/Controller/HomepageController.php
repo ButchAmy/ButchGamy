@@ -16,9 +16,9 @@ class HomepageController extends AbstractController
 	public function indexAll(GameRepository $gameRepository): Response
 	{
 		if ($this->getUser()) {
-			/** @var $user User */
-			$user = $this->getUser();
-			if ($user->isAdmin()) {
+			/** @var $appUser User */
+			$appUser = $this->getUser();
+			if ($appUser->isAdmin()) {
 				return $this->render('homepage/index_all.html.twig', [
 					'games' => $gameRepository->findAll(),
 					// Show both public and private games if user is an admin
@@ -38,9 +38,16 @@ class HomepageController extends AbstractController
 			return $this->redirectToRoute('app_homepage_all');
 			// If user is not logged in, redirect to normal homepage to prevent errors
 		}
+		/** @var $appUser User */
+		$appUser = $this->getUser();
+		$friendGames = [];
+		foreach ($gameRepository->findAll() as $game) {
+			if (in_array($game->getDeveloper(), $appUser->getFriends()->toArray())) {
+				$friendGames[] = $game;
+			}
+		}
 		return $this->render('homepage/index_friends.html.twig', [
-			'games' => $gameRepository->findBy(['public' => true]),
-			// Once friending is implemented, check if game creator is a friend of logged in user
+			'games' => $friendGames,
 		]);
     }
 }
