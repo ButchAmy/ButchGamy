@@ -62,7 +62,7 @@ class UserController extends AbstractController
 		$achievements = $user->getAchievements();
 		$achievementCounts = [];
 		foreach ($achievements as $achievement) {
-			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getPlayerCount($gameResultsRepository);
+			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getPlayerCount();
 		}
 
         return $this->render('user/show_achievements.html.twig', [
@@ -80,7 +80,7 @@ class UserController extends AbstractController
 			$this->handleResponse($user, $friendRequestRepository, $entityManager, $_POST["request"]);
 		}
 
-		$playedCount = $user->getPlayedCount($gameResultsRepository);
+		$playedCount = $user->getPlayedCount();
 
         return $this->render('user/show_stats.html.twig', [
             'user' => $user,
@@ -185,7 +185,7 @@ class UserController extends AbstractController
 					$friendRequest = new FriendRequest();
 					$friendRequest->setUserFrom($this->getUser());
 					$friendRequest->setUserTo($user);
-					$friendRequest->setRequestedOn(new DateTimeImmutable('now'));
+					$friendRequest->setCreatedOn(new DateTimeImmutable('now'));
 					$friendRequest->setAccepted(false);
 					$entityManager->persist($friendRequest);
 				}

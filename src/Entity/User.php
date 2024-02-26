@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\ConversationRepository;
 use App\Repository\FriendRequestRepository;
 use App\Repository\GameResultsRepository;
 use App\Repository\UserRepository;
@@ -76,8 +77,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'friends')]
     private Collection $friends;
 
+	#[ORM\OneToMany(mappedBy: 'userTo', targetEntity: FriendRequest::class, orphanRemoval: true)]
+	private Collection $friendRequestsReceived;
+
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Achievement::class, orphanRemoval: true)]
     private Collection $achievements;
+
+    #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'users')]
+    private Collection $conversations;
 
     public function __construct()
     {
@@ -85,6 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->gameResults = new ArrayCollection();
         $this->friends = new ArrayCollection();
         $this->achievements = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -373,6 +381,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+	/**
+     * @return Collection<int, FriendRequest>
+     */
+    public function getFriendRequestsReceived(): Collection
+    {
+        return $this->friendRequestsReceived;
+    }
+
+    public function addFriendRequestReceived(FriendRequest $friendRequestReceived): static
+    {
+        if (!$this->friendRequestsReceived->contains($friendRequestReceived)) {
+            $this->friendRequestsReceived->add($friendRequestReceived);
+            $friendRequestReceived->setUserTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFriendRequestReceived(FriendRequest $friendRequestReceived): static
+    {
+        if ($this->friendRequestsReceived->removeElement($friendRequestReceived)) {
+            // set the owning side to null (unless already changed)
+            if ($friendRequestReceived->getUserTo() === $this) {
+                $friendRequestReceived->setUserTo(null);
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Achievement>
      */
@@ -404,30 +442,73 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 	public function friendStatus(User $appUser, FriendRequestRepository $friendRequestRepository): int
-	{
-		// Checks if this user and target user are friends and what the state is of a friend request between them, if it exists
-		// This is intended to be checked on the user being viewed; in other words, "appUser" refers to "$this->getUser()" aka the viewing user
-		// 0 = Not friends, 1 = Sent a friend request, 2 = Received a friend request, 3 = Friends
-		if (in_array($appUser, $this->getFriends()->toArray())) {
-			return 3;
-		}
-		if ($friendRequestRepository->findBy([ 'userFrom' => $this, 'userTo' => $appUser ])) {
-			return 2;
-		}
-		if ($friendRequestRepository->findBy([ 'userFrom' => $appUser, 'userTo' => $this ])) {
-			return 1;
-		}
-		return 0;
-	}
+				{
+               		// Checks if this user and target user are friends and what the state is of a friend request between them, if it exists
+               		// This is intended to be checked on the user being viewed; in other words, "appUser" refers to "$this->getUser()" aka the viewing user
+               		// 0 = Not friends, 1 = Sent a friend request, 2 = Received a friend request, 3 = Friends
+					if (in_array($appUser, $this->getFriends()->toArray())) {
+						return 3;
+					}
+					if ($friendRequestRepository->findBy([ 'userFrom' => $this, 'userTo' => $appUser ])) {
+						return 2;
+					}
+					if ($friendRequestRepository->findBy([ 'userFrom' => $appUser, 'userTo' => $this ])) {
+						return 1;
+					}
+					return 0;
+				}
 
-	public function getPlayedCount(GameResultsRepository $gameResultsRepository): int
+	public function getPlayedCount(): int
+				{
+					$gameArray = [];
+					foreach ($this->getGameResults() as $gameResult) {
+						if (!in_array($gameResult->getGame(), $gameArray)) {
+							$gameArray[] = $gameResult->getGame();
+						}
+					}
+					return count($gameArray);
+				}
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): static
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations->add($conversation);
+            $conversation->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): static
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            $conversation->removeUser($this);
+        }
+
+        return $this;
+    }
+
+	public function getNotificationCount(): int
 	{
-		$gameArray = [];
-		foreach ($gameResultsRepository->findBy([ 'user' => $this ]) as $gameResult) {
-			if (!in_array($gameResult->getGame(), $gameArray)) {
-				$gameArray[] = $gameResult->getGame();
+		$count = 0;
+		foreach ($this->getFriendRequestsReceived() as $friendRequest) {
+			if ($friendRequest->isAccepted() == false) {
+				$count++;
 			}
 		}
-		return count($gameArray);
+		foreach ($this->getConversations() as $conversation) {
+			if ($conversation->getDisplayMessageFor($this)->isUnread()) {
+				$count++;
+			}
+		}
+		return $count;
 	}
 }

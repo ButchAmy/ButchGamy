@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\FriendRequestRepository;
+use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: FriendRequestRepository::class)]
-class FriendRequest
+#[ORM\Entity(repositoryClass: MessageRepository::class)]
+class Message
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,15 +18,22 @@ class FriendRequest
     #[ORM\JoinColumn(nullable: false)]
     private ?User $userFrom = null;
 
-    #[ORM\ManyToOne(inversedBy: 'friendRequestsReceived')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $userTo = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdOn = null;
 
+    #[ORM\Column(length: 2000)]
+    private ?string $content = null;
+
     #[ORM\Column]
-    private ?bool $accepted = null;
+    private ?bool $unread = null;
+
+    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Conversation $conversation = null;
 
     public function getId(): ?int
     {
@@ -69,14 +76,38 @@ class FriendRequest
         return $this;
     }
 
-    public function isAccepted(): ?bool
+    public function getContent(): ?string
     {
-        return $this->accepted;
+        return $this->content;
     }
 
-    public function setAccepted(bool $accepted): static
+    public function setContent(string $content): static
     {
-        $this->accepted = $accepted;
+        $this->content = $content;
+
+        return $this;
+    }
+
+    public function isUnread(): ?bool
+    {
+        return $this->unread;
+    }
+
+    public function setUnread(bool $unread): static
+    {
+        $this->unread = $unread;
+
+        return $this;
+    }
+
+    public function getConversation(): ?Conversation
+    {
+        return $this->conversation;
+    }
+
+    public function setConversation(?Conversation $conversation): static
+    {
+        $this->conversation = $conversation;
 
         return $this;
     }

@@ -247,10 +247,10 @@ class Game
         return $this;
     }
 
-	public function getPlayerCount(GameResultsRepository $gameResultsRepository): int
+	public function getPlayerCount(): int
 	{
 		$playerArray = [];
-		foreach ($gameResultsRepository->findBy([ 'game' => $this ]) as $gameResult) {
+		foreach ($this->getGameResults() as $gameResult) {
 			if (!in_array($gameResult->getUser(), $playerArray)) {
 				$playerArray[] = $gameResult->getUser();
 			}
