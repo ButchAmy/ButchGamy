@@ -39,7 +39,7 @@ class UserController extends AbstractController
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET', 'POST'])]
 	#[Route('/{id}/games', name: 'app_user_show_games', methods: ['GET', 'POST'])]
-    public function show_games(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager): Response
+    public function show_games(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, Request $request): Response
     {
 		if (isset($_POST["request"])) {
 			$this->handleResponse($user, $friendRequestRepository, $entityManager, $_POST["request"]);
@@ -181,21 +181,21 @@ class UserController extends AbstractController
 			if ($appUser->isFriendAllowed() == false) {
 				throw $this->createAccessDeniedException('You are banned from sending friend requests!');
 			} else {
-				if (!$friendRequestRepository->findBy([ 'userA' => $this->getUser(), 'userB' => $user ])) {
+				if (!$friendRequestRepository->findBy([ 'userFrom' => $this->getUser(), 'userTo' => $user ])) {
 					$friendRequest = new FriendRequest();
-					$friendRequest->setUserA($this->getUser());
-					$friendRequest->setUserB($user);
+					$friendRequest->setUserFrom($this->getUser());
+					$friendRequest->setUserTo($user);
 					$friendRequest->setRequestedOn(new DateTimeImmutable('now'));
 					$friendRequest->setAccepted(false);
 					$entityManager->persist($friendRequest);
 				}
 			}
 		} elseif ($response == "accept") {
-			$entityManager->getRepository(FriendRequest::class)->findOneBy([ 'userA' => $user, 'userB' => $this->getUser() ])->setAccepted(true);
-			$entityManager->getRepository(FriendRequest::class)->findOneBy([ 'userA' => $user, 'userB' => $this->getUser() ])->getUserA()->addFriend($this->getUser());
-			$entityManager->getRepository(FriendRequest::class)->findOneBy([ 'userA' => $user, 'userB' => $this->getUser() ])->getUserB()->addFriend($user);
+			$entityManager->getRepository(FriendRequest::class)->findOneBy([ 'userFrom' => $user, 'userTo' => $this->getUser() ])->setAccepted(true);
+			$entityManager->getRepository(FriendRequest::class)->findOneBy([ 'userFrom' => $user, 'userTo' => $this->getUser() ])->getUserFrom()->addFriend($this->getUser());
+			$entityManager->getRepository(FriendRequest::class)->findOneBy([ 'userFrom' => $user, 'userTo' => $this->getUser() ])->getUserTo()->addFriend($user);
 		} elseif ($response == "refuse") {
-			$entityManager->remove($friendRequestRepository->findOneBy([ 'userA' => $user, 'userB' => $this->getUser() ]));
+			$entityManager->remove($friendRequestRepository->findOneBy([ 'userFrom' => $user, 'userTo' => $this->getUser() ]));
 		}
 		$entityManager->flush();
 

@@ -16,11 +16,11 @@ class FriendRequest
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $userA = null;
+    private ?User $userFrom = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $userB = null;
+    private ?User $userTo = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $requestedOn = null;
@@ -33,26 +33,26 @@ class FriendRequest
         return $this->id;
     }
 
-    public function getUserA(): ?User
+    public function getUserFrom(): ?User
     {
-        return $this->userA;
+        return $this->userFrom;
     }
 
-    public function setUserA(?User $userA): static
+    public function setUserFrom(?User $userFrom): static
     {
-        $this->userA = $userA;
+        $this->userFrom = $userFrom;
 
         return $this;
     }
 
-    public function getUserB(): ?User
+    public function getUserTo(): ?User
     {
-        return $this->userB;
+        return $this->userTo;
     }
 
-    public function setUserB(?User $userB): static
+    public function setUserTo(?User $userTo): static
     {
-        $this->userB = $userB;
+        $this->userTo = $userTo;
 
         return $this;
     }

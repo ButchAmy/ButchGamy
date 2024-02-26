@@ -411,10 +411,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 		if (in_array($appUser, $this->getFriends()->toArray())) {
 			return 3;
 		}
-		if ($friendRequestRepository->findBy([ 'userA' => $this, 'userB' => $appUser ])) {
+		if ($friendRequestRepository->findBy([ 'userFrom' => $this, 'userTo' => $appUser ])) {
 			return 2;
 		}
-		if ($friendRequestRepository->findBy([ 'userA' => $appUser, 'userB' => $this ])) {
+		if ($friendRequestRepository->findBy([ 'userFrom' => $appUser, 'userTo' => $this ])) {
 			return 1;
 		}
 		return 0;
