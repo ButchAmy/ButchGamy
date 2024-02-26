@@ -12,14 +12,6 @@
 			<a class="nav-link active" aria-current="page" href="{{ path('app_homepage') }}">Friends' games</a>
 		</li>
 	</ul>
-	<div class="container text-center">
-		<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
-		{% for game in games %}
-			<div class="col"><img class="img-fluid" src="{{ asset(game.image) }}"><h3><a href="{{ path('app_game_show', {'id': game.id}) }}">{{ game.title }}</a></h3></div>
-        {% else %}
-            <div class="col d-flex justify-content-center align-items-center">No games, or no friends?</div>
-        {% endfor %}
-		</div>
-	</div>
+	{{ include('game/_grid.html.twig', {emptyMessage: 'No games, or no friends?'}) }}
 </div>
 {% endblock %}

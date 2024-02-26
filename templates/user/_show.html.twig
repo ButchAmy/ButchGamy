@@ -1,0 +1,47 @@
+<div><a href="{{ path('app_user_index') }}">Back to index</a></div>
+<form class="my-3" method="post">
+	{% if user.profilePic %}
+		<img src="{{ asset(user.profilePic) }}" height="50px" width="50px">
+	{% else %}
+		<img src="{{ asset('assets/images/default.webp') }}" height="50px" width="50px">
+	{% endif %}
+	<span class="h1 align-bottom">{{ user.username }}</span>
+	{% if app.user == user %}
+		<a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-sm btn-primary align-bottom">Edit profile</a>
+	{% elseif friendStatus == 0 %}
+		<button class="btn btn-sm btn-primary align-bottom" type="submit" name="request" value="send">Send friend request</button>
+	{% elseif friendStatus == 1 %}
+		<button class="btn btn-sm btn-secondary align-bottom" disabled>Friend request sent</button>
+	{% elseif friendStatus == 2 %}
+		<button class="btn btn-sm btn-success align-bottom" type="submit" name="request" value="accept">Accept friend request</button>
+		<button class="btn btn-sm btn-danger align-bottom" type="submit" name="request" value="refuse">Refuse friend request</button>
+	{% elseif friendStatus == 3 %}
+		<a href="#" class="btn btn-sm btn-info align-bottom">Send message</a>
+	{% endif %}
+	{% if app.user.admin %}
+		<a href="{{ path('app_user_edit_admin', {'id': user.id}) }}" class="btn btn-sm btn-primary align-bottom">Edit permissions</a>
+	{% endif %}
+</form>
+<table class="table">
+	<tbody>
+		<tr>
+			<th>Member since:</th>
+			<td>{{ user.createdOn ? user.createdOn|date('Y-m-d H:i:s') : '' }}</td>
+		</tr>
+		{% if user.birthday %}
+			<tr>
+				<th>Birthday:</th>
+				<td>{{ user.birthday ? user.birthday|date('Y-m-d') : '' }}</td>
+			</tr>
+		{% endif %}
+		{% if user.gender %}
+			<tr>
+				<th>Gender:</th>
+				<td>{{ user.gender }}</td>
+			</tr>
+		{% endif %}
+		<tr>
+			<td colspan="2">{{ user.profileBio ? user.profileBio : '<em>This space intentionally left blank.</em>' }}</td>
+		</tr>
+	</tbody>
+</table>

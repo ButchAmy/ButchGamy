@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ButchGamy - {{ user.username }}'s Profile{% endblock %}
+
+{% block body %}
+	<div class="container my-3">
+		{{ include("user/_show.html.twig") }}
+		<ul class="nav nav-tabs my-3">
+			<li class="nav-item">
+				<a class="nav-link" href="{{ path('app_user_show_games', {'id': user.id}) }}">Games</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ path('app_user_show_achievements', {'id': user.id}) }}">Achievements</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link active" aria-current="page" href="{{ path('app_user_show_stats', {'id': user.id}) }}">Stats</a>
+			</li>
+		</ul>
+		{% import 'macros.html.twig' as macros %}
+		<div class="container">
+			<table class="table">
+				<tbody>
+					<tr>
+						<th>Number of games played:</th>
+						<td>{{ playedCount }}</td>
+					</tr>
+					{% if gameResults is not empty %}
+						<tr>
+							<th>Best score in any game:</th>
+							<td>
+								{{ gameResults|sort((a, b) => b.score <=> a.score)|first.score }}
+								(in <a href="{{ path('app_game_show_results', {'id': gameResults|sort((a, b) => b.score <=> a.score)|first.game.id}) }}">
+									{{ gameResults|sort((a, b) => b.score <=> a.score)|first.game.title }}</a>)
+							</td>
+						</tr>
+						<tr>
+							<th>Best time in any game:</th>
+							<td>
+								{{ macros.secondsToMinutes(gameResults|sort((a, b) => a.time <=> b.time)|first.time) }}
+								(in <a href="{{ path('app_game_show_results', {'id': gameResults|sort((a, b) => a.time <=> b.time)|first.game.id}) }}">
+									{{ gameResults|sort((a, b) => a.time <=> b.time)|first.game.title }}</a>)
+							</td>
+						</tr>
+					{% endif %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}

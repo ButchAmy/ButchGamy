@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AchievementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AchievementRepository::class)]
@@ -27,6 +28,13 @@ class Achievement
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[ORM\ManyToOne(inversedBy: 'achievements')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $achievedOn = null;
 
     public function __construct()
     {
@@ -85,4 +93,34 @@ class Achievement
 
         return $this;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getAchievedOn(): ?\DateTimeInterface
+    {
+        return $this->achievedOn;
+    }
+
+    public function setAchievedOn(\DateTimeInterface $achievedOn): static
+    {
+        $this->achievedOn = $achievedOn;
+
+        return $this;
+    }
+
+	public function getAchieverCount(AchievementRepository $achievementRepository): int
+	{
+		// Look up all achievements from the same game with the same name
+		return count($achievementRepository->findBy([ 'game' => $this->getGame(), 'name' => $this->getName() ]));
+	}
 }

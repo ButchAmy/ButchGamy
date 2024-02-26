@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Repository\FriendRequestRepository;
+use App\Repository\GameResultsRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -74,11 +76,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'friends')]
     private Collection $friends;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Achievement::class, orphanRemoval: true)]
+    private Collection $achievements;
+
     public function __construct()
     {
         $this->gamesDeveloped = new ArrayCollection();
         $this->gameResults = new ArrayCollection();
         $this->friends = new ArrayCollection();
+        $this->achievements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -366,4 +372,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Achievement>
+     */
+    public function getAchievements(): Collection
+    {
+        return $this->achievements;
+    }
+
+    public function addAchievement(Achievement $achievement): static
+    {
+        if (!$this->achievements->contains($achievement)) {
+            $this->achievements->add($achievement);
+            $achievement->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAchievement(Achievement $achievement): static
+    {
+        if ($this->achievements->removeElement($achievement)) {
+            // set the owning side to null (unless already changed)
+            if ($achievement->getUser() === $this) {
+                $achievement->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+	public function friendStatus(User $appUser, FriendRequestRepository $friendRequestRepository): int
+	{
+		// Checks if this user and target user are friends and what the state is of a friend request between them, if it exists
+		// This is intended to be checked on the user being viewed; in other words, "appUser" refers to "$this->getUser()" aka the viewing user
+		// 0 = Not friends, 1 = Sent a friend request, 2 = Received a friend request, 3 = Friends
+		if (in_array($appUser, $this->getFriends()->toArray())) {
+			return 3;
+		}
+		if ($friendRequestRepository->findBy([ 'userA' => $this, 'userB' => $appUser ])) {
+			return 2;
+		}
+		if ($friendRequestRepository->findBy([ 'userA' => $appUser, 'userB' => $this ])) {
+			return 1;
+		}
+		return 0;
+	}
+
+	public function getPlayedCount(GameResultsRepository $gameResultsRepository): int
+	{
+		$gameArray = [];
+		foreach ($gameResultsRepository->findBy([ 'user' => $this ]) as $gameResult) {
+			if (!in_array($gameResult->getGame(), $gameArray)) {
+				$gameArray[] = $gameResult->getGame();
+			}
+		}
+		return count($gameArray);
+	}
 }

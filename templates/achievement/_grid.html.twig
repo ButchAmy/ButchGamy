@@ -1,0 +1,22 @@
+<div class="container text-center">
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+		{% for achievement in achievements %}
+			<div class="col">
+				<p><img src="{{ achievement.image }}" width="64px" height="64px"></p>
+				{% if game|default(null) == null %}
+					<a href="{{ path('app_game_show_achievements', {'id': achievement.game.id}) }}">
+						<h4>{{ achievement.name }}</h4>
+					</a>
+				{% else %}
+					<h4>{{ achievement.name }}</h4>
+				{% endif %}
+				<p>{{ achievement.description }}</p>
+				<p class="small">
+					<em>{{ (achievementCounts[loop.index0] * 100)|round }}% of players have this achievement!</em>
+				</p>
+			</div>
+		{% else %}
+			<div class="col d-flex justify-content-center align-items-center">{{ emptyMessage|default('No achievements yet!') }}</div>
+		{% endfor %}
+	</div>
+</div>

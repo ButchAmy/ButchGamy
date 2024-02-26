@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\GameRepository;
+use App\Repository\GameResultsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -177,6 +178,23 @@ class Game
         return $this->achievements;
     }
 
+	public function getUniqueAchievements(): Array
+	{
+		$uniqueAchievements = [];
+		foreach ($this->achievements as $userAchievement) {
+			$unique = true;
+			foreach ($uniqueAchievements as $uniqueAchievement) {
+				if ($userAchievement->getName() == $uniqueAchievement->getName()) {
+					$unique = false;
+				}
+			}
+			if ($unique) {
+				$uniqueAchievements[] = $userAchievement;
+			}
+		}
+		return $uniqueAchievements;
+	}
+
     public function addAchievement(Achievement $achievement): static
     {
         if (!$this->achievements->contains($achievement)) {
@@ -228,4 +246,15 @@ class Game
 
         return $this;
     }
+
+	public function getPlayerCount(GameResultsRepository $gameResultsRepository): int
+	{
+		$playerArray = [];
+		foreach ($gameResultsRepository->findBy([ 'game' => $this ]) as $gameResult) {
+			if (!in_array($gameResult->getUser(), $playerArray)) {
+				$playerArray[] = $gameResult->getUser();
+			}
+		}
+		return count($playerArray);
+	}
 }

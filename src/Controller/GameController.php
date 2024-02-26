@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Game;
 use App\Entity\User;
 use App\Form\GameType;
+use App\Repository\AchievementRepository;
 use DateTimeImmutable;
 use App\Repository\GameRepository;
 use App\Repository\GameResultsRepository;
@@ -70,7 +71,7 @@ class GameController extends AbstractController
 
     #[Route('/{id}', name: 'app_game_show', methods: ['GET'])]
 	#[Route('/{id}/leaderboard', name: 'app_game_show_results', methods: ['GET'])]
-    public function show(Game $game) : Response
+    public function show_results(Game $game) : Response
     {
 		/** @var $appUser User */
 		$appUser = $this->getUser();
@@ -84,11 +85,37 @@ class GameController extends AbstractController
 		if (isset($_GET['sort'])) {
 			$sort = htmlspecialchars($_GET['sort']);
 		};
-        return $this->render('game/show.html.twig', [
+        return $this->render('game/show_results.html.twig', [
             'game' => $game,
 			'developer' => $game->getDeveloper(),
 			'gameResults' => $game->getGameResults(),
 			'sort' => $sort,
+        ]);
+    }
+
+	#[Route('/{id}/achievements', name: 'app_game_show_achievements', methods: ['GET'])]
+    public function show_achievements(Game $game, AchievementRepository $achievementRepository, GameResultsRepository $gameResultsRepository): Response
+    {
+		/** @var $appUser User */
+		$appUser = $this->getUser();
+		if (!$game->isPublic() &&
+				!$appUser->isAdmin() &&
+				$appUser != $game->getDeveloper() &&
+				!in_array($appUser, $game->getDeveloper()->getFriends()->toArray())) {
+			throw $this->createAccessDeniedException('You are not authorized to access this game!');
+		}
+
+		$achievements = $game->getUniqueAchievements();
+		$achievementCounts = [];
+		foreach ($achievements as $achievement) {
+			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getPlayerCount($gameResultsRepository);
+		}
+		
+        return $this->render('game/show_achievements.html.twig', [
+            'game' => $game,
+			'developer' => $game->getDeveloper(),
+			'achievements' => $achievements,
+			'achievementCounts' => $achievementCounts,
         ]);
     }
 
