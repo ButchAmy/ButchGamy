@@ -257,4 +257,35 @@ class Game
 		}
 		return count($playerArray);
 	}
+
+	public function getHash(User $user): string
+	{
+		return md5($this->getApiKey() . $user->getId() . 'I_LOVE_SMURFS');
+	}
+
+	public function isViewAllowedBy(User $user): bool
+	{
+		// Viewing of public games is allowed by anyone
+		if ($this->isPublic()) {
+			return true;
+		}
+		// Viewing of private games is allowed by the developer, by admins...
+		if ($user === $this->getDeveloper() || $user->isAdmin()) {
+			return true;
+		}
+		// ...and by friends of the developer
+		if (in_array($user, $this->getDeveloper()->getFriends()->toArray())) {
+			return true;
+		}
+		return false;
+	}
+
+	public function isEditAllowedBy(User $user): bool
+	{
+		// Editing is ONLY allowed by the developer, and by admins
+		if ($user === $this->getDeveloper() || $user->isAdmin()) {
+			return true;
+		}
+		return false;
+	}
 }

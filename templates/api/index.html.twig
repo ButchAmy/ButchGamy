@@ -9,14 +9,14 @@
 		<h1>ButchGamy API documentation</h1>
 		<p>
 			<strong>Endpoint:</strong>
-			<a href="{{ endpoint }}" target="_blank">{{ endpoint }}</a>
+			<a href="{{ app.request.getSchemeAndHttpHost() }}/api" target="_blank">{{ app.request.getSchemeAndHttpHost() }}/api</a>
 		</p>
-		<p>All API calls require the following parameters:
+		<p>When a user clicks the button to play your game, they will be sent to your given URL, together with a generated hash and salt for that session.</p>
+		<p>All requests made by your game require at least the following parameters:
 			<ul>
-				<li>apiKey: Your game's API key. You can find this in the game's edit page.</li>
-				<li>user: The user identifier provided to you in the "user" GET parameter.</li>
-				<li>salt: The salt provided to you in the "salt" GET parameter.</li>
-				<li><em>No idea if this is correct, will have to ask how salting works</em></li>
+				<li>apiKey <em>(your game's API key; found in the game's edit page)</em></li>
+				<li>userId <em>(the player's ID; provided in the 'userId' GET parameter)</em></li>
+				<li>hash <em>(the security hash; provided in the 'hash' GET parameter)</em></li>
 			</ul>
 		</p>
 		<h2>Game Results</h2>

@@ -1,12 +1,10 @@
 
 ###> symfony/framework-bundle ###
-/.env
-/.env.test
 /.env.local
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
+/httpdocs/bundles/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
@@ -22,8 +20,8 @@
 ###< symfony/phpunit-bridge ###
 
 ###> symfony/asset-mapper ###
-### /public/assets/ ###
-/public/assets/images/users/
-/public/assets/images/games/
+### /httpdocs/assets/ ###
+/httpdocs/assets/images/users/
+/httpdocs/assets/images/games/
 /assets/vendor/
 ###< symfony/asset-mapper ###

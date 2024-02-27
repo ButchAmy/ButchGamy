@@ -9,11 +9,18 @@
 	<h1 class="h3 my-3 font-weight-normal">Send new message</h1>
 
     {{ form_start(messageForm) }}
-		<p>{{ form_row(messageForm.userTo) }}</p>
 		{% if app.user.messageAllowed %}
-			<p>{{ form_widget(messageForm.content) }}</p>
-			<p><button type="submit" class="btn btn-primary">Send</button></p>
+			{% if app.user.friends is not empty %} 
+				<p>{{ form_row(messageForm.userTo) }}</p>
+				<p>{{ form_widget(messageForm.content) }}</p>
+				<p><button type="submit" class="btn btn-primary">Send</button></p>
+			{% else %}
+				<p>{{ form_row(messageForm.userTo, {'attr': {'disabled': true }}) }}</p>
+				<p>{{ form_widget(messageForm.content, {'attr': {'disabled': true, 'placeholder': 'You can only send messages to friends'}}) }}</p>
+				<p><button class="btn btn-primary" disabled>Send</button></p>
+			{% endif %}
 		{% else %}
+			<p>{{ form_row(messageForm.userTo) }}</p>
 			<p>{{ form_widget(messageForm.content, {'attr': {'disabled': true, 'placeholder': 'You are banned from sending messages'}}) }}</p>
 			<p><button class="btn btn-primary" disabled>Send</button></p>
 		{% endif %}

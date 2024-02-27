@@ -44,7 +44,7 @@ class InboxController extends AbstractController
 
 		$message = new Message;
 		if (isset($_GET['to'])) { // This is used for when you come to this screen by clicking on 'send new message' from a friend's profile
-			$message->setUserTo($userRepository->findOneBy([ 'id' => $_GET['to'] ]));
+			$message->setUserTo($userRepository->findOneById($_GET['to']));
 		}
         $form = $this->createForm(MessageType::class, $message, [ 'app_user' => $appUser ]);
         $form->handleRequest($request);
@@ -125,7 +125,7 @@ class InboxController extends AbstractController
 
 	public function handleFriendRequest(EntityManagerInterface $entityManager, int $requestId, string $response): static
 	{
-		$friendRequest = $entityManager->getRepository(FriendRequest::class)->findOneBy([ 'id' => $requestId ]);
+		$friendRequest = $entityManager->getRepository(FriendRequest::class)->findOneById($requestId);
 		if ($friendRequest->getUserTo() != $this->getUser()) {
 			throw $this->createAccessDeniedException('You are not authorized to handle this friend request!');
 		} elseif ($response === 'accept') {

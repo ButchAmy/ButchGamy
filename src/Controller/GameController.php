@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Game;
-use App\Entity\User;
 use App\Form\GameType;
 use App\Repository\AchievementRepository;
 use DateTimeImmutable;
@@ -72,14 +71,10 @@ class GameController extends AbstractController
 	#[Route('/{id}/leaderboard', name: 'app_game_show_results', methods: ['GET'])]
     public function show_results(Game $game) : Response
     {
-		/** @var $appUser User */
-		$appUser = $this->getUser();
-		if (!$game->isPublic() &&
-				!$appUser->isAdmin() &&
-				$appUser != $game->getDeveloper() &&
-				!in_array($appUser, $game->getDeveloper()->getFriends()->toArray())) {
+		if (!$game->isViewAllowedBy($this->getUser())) {
 			throw $this->createAccessDeniedException('You are not authorized to access this game!');
 		}
+
 		$sort = 'score';
 		if (isset($_GET['sort'])) {
 			$sort = htmlspecialchars($_GET['sort']);
@@ -95,12 +90,7 @@ class GameController extends AbstractController
 	#[Route('/{id}/achievements', name: 'app_game_show_achievements', methods: ['GET'])]
     public function show_achievements(Game $game, AchievementRepository $achievementRepository, GameResultRepository $gameResultRepository): Response
     {
-		/** @var $appUser User */
-		$appUser = $this->getUser();
-		if (!$game->isPublic() &&
-				!$appUser->isAdmin() &&
-				$appUser != $game->getDeveloper() &&
-				!in_array($appUser, $game->getDeveloper()->getFriends()->toArray())) {
+		if (!$game->isViewAllowedBy($this->getUser())) {
 			throw $this->createAccessDeniedException('You are not authorized to access this game!');
 		}
 
@@ -121,14 +111,10 @@ class GameController extends AbstractController
 	#[Route('/{id}/stats', name: 'app_game_show_stats', methods: ['GET'])]
     public function show_stats(Game $game): Response
     {
-		/** @var $appUser User */
-		$appUser = $this->getUser();
-		if (!$game->isPublic() &&
-				!$appUser->isAdmin() &&
-				$appUser != $game->getDeveloper() &&
-				!in_array($appUser, $game->getDeveloper()->getFriends()->toArray())) {
+		if (!$game->isViewAllowedBy($this->getUser())) {
 			throw $this->createAccessDeniedException('You are not authorized to access this game!');
 		}
+
 		$scoreChartData = [
 			['Time', 'Score', ['role' => 'annotation']],
 			[$game->getCreatedOn(), 0, null],
@@ -152,9 +138,7 @@ class GameController extends AbstractController
     #[Route('/{id}/edit', name: 'app_game_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Game $game, EntityManagerInterface $entityManager): Response
     {
-		/** @var $appUser User */
-		$appUser = $this->getUser();
-		if ($appUser != $game->getDeveloper() && !$appUser->isAdmin() ) {
+		if (!$game->isEditAllowedBy($this->getUser())) {
 			throw $this->createAccessDeniedException('You are not authorized to edit this game!');
 		}
 
@@ -194,9 +178,7 @@ class GameController extends AbstractController
     #[Route('/{id}', name: 'app_game_delete', methods: ['POST'])]
     public function delete(Request $request, Game $game, EntityManagerInterface $entityManager): Response
     {
-		/** @var $appUser User */
-		$appUser = $this->getUser();
-		if ($appUser != $game->getDeveloper() && !$appUser->isAdmin() ) {
+		if (!$game->isEditAllowedBy($this->getUser())) {
 			throw $this->createAccessDeniedException('You are not authorized to delete this game!');
 		}
 

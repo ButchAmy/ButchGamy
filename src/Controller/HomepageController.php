@@ -26,7 +26,7 @@ class HomepageController extends AbstractController
 			}
 		}
 		return $this->render('homepage/index_all.html.twig', [
-			'games' => $gameRepository->findBy(['public' => true]),
+			'games' => $gameRepository->findByPublic(true),
 		]);
     }
 

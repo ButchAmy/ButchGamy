@@ -2,23 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Achievement;
 use App\Entity\Game;
 use App\Entity\GameResult;
 use App\Entity\User;
-use App\Form\GameType;
-use App\Repository\AchievementRepository;
 use DateTimeImmutable;
 use App\Repository\GameRepository;
-use App\Repository\GameResultRepository;
-use CMEN\GoogleChartsBundle\GoogleCharts\Charts\LineChart;
-use Doctrine\Common\Collections\Criteria;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -28,21 +21,19 @@ class ApiController extends AbstractController
 	#[Route('/', name: 'app_api_docs', methods: ['GET'])]
     public function api_docs(): Response
     {
-		return $this->render('api/index.html.twig', [
-			'endpoint' => 'https://butchgamy.net/api',
-		]);
+		return $this->render('api/index.html.twig');
     }
 
 	#[Route('/result', name: 'app_api_result', methods: ['GET', 'POST'])]
-    public function api_result(EntityManager $entityManager): Response
+    public function api_result(EntityManager $entityManager, GameRepository $gameRepository, UserRepository $userRepository): Response
     {
-		// Check authorization and set game and user variables and such here
-		$user = null;
-		$game = null;
-
 		// The request is using the POST method
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			try {
+				// Check authorization and set game and user variables and such here
+				$user = $userRepository->findOneById($_POST['userId']);
+				$game = $gameRepository->findOneByApiKey($_POST['apiKey']);
+				$this->checkHash($game, $user, $_POST['hash']);
 				// Create new game result
 				$gameResult = new GameResult;
 				// Fill out fields
@@ -60,6 +51,11 @@ class ApiController extends AbstractController
 			}
 		}
 
+		// Check authorization and set game and user variables and such here
+		$user = $userRepository->findOneById($_GET['userId']);
+		$game = $gameRepository->findOneByApiKey($_GET['apiKey']);
+		$this->checkHash($game, $user, $_GET['hash']);
+
 		// Return the filtered collection
 		return $this->json([
 			'results' => $user->getGameResultsFor($game),
@@ -67,11 +63,12 @@ class ApiController extends AbstractController
     }
 
 	#[Route('/result/last', name: 'app_api_result_last', methods: ['GET'])]
-    public function api_result_last(): Response
+    public function api_result_last(GameRepository $gameRepository, UserRepository $userRepository): Response
     {
 		// Check authorization and set game and user variables and such here
-		$user = null;
-		$game = null;
+		$user = $userRepository->findOneById($_GET['userId']);
+		$game = $gameRepository->findOneByApiKey($_GET['apiKey']);
+		$this->checkHash($game, $user, $_GET['hash']);
 
 		// Return the most recently added game result from the filtered collection
 		return $this->json([
@@ -80,19 +77,20 @@ class ApiController extends AbstractController
     }
 
 	#[Route('/achievement', name: 'app_api_achievement', methods: ['GET', 'POST'])]
-    public function api_achievement(EntityManager $entityManager): Response
+    public function api_achievement(EntityManager $entityManager, GameRepository $gameRepository, UserRepository $userRepository): Response
     {
-		// Check authorization and set game and user variables and such here
-		$user = null;
-		$game = null;
-
 		// The request is using the POST method
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			try {
+				$user = $userRepository->findOneById($_POST['userId']);
+				$game = $gameRepository->findOneByApiKey($_POST['apiKey']);
+				$this->checkHash($game, $user, $_POST['hash']);
 				// Check - does the User already have this achievement?
 				foreach ($user->getAchievementsFor($game) as $achievement) {
 					if ($achievement->getName() === $_POST['name']) {
-						// Return response with variable false
+						return $this->json([
+							'new' => false,
+						]);
 					}
 				}
 				// Create new achievement
@@ -108,10 +106,18 @@ class ApiController extends AbstractController
 				$entityManager->persist($achievement);
 				$entityManager->flush();
 				// Return response with variable true
+				return $this->json([
+					'new' => true,
+				]);
 			} catch (BadRequestException $e) {
 				throw $e;
 			}
 		}
+
+		// Check authorization and set game and user variables and such here
+		$user = $userRepository->findOneById($_GET['userId']);
+		$game = $gameRepository->findOneByApiKey($_GET['apiKey']);
+		$this->checkHash($game, $user, $_GET['hash']);
 
 		// Return the filtered collection
 		return $this->json([
@@ -120,10 +126,12 @@ class ApiController extends AbstractController
     }
 
 	#[Route('/user', name: 'app_api_user', methods: ['GET'])]
-    public function api_user(): Response
+    public function api_user(GameRepository $gameRepository, UserRepository $userRepository): Response
     {
 		// Check authorization and set user variables and such here
-		$user = null;
+		$user = $userRepository->findOneById($_GET['userId']);
+		$game = $gameRepository->findOneByApiKey($_GET['apiKey']);
+		$this->checkHash($game, $user, $_GET['hash']);
 
 		// Return username and profile pic URL for identified user
 		return $this->json([
@@ -131,4 +139,12 @@ class ApiController extends AbstractController
 			'profilePic' => 'http://localhost:9001/' . $user->getProfilePic(),
 		]);
     }
+
+	public function checkHash(Game $game, User $user, string $hash): static
+	{
+		if ($game->getHash($user) !== $hash) {
+			die('You should kill yourself NOW');
+		}
+		return $this;
+	}
 }

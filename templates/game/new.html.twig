@@ -15,7 +15,7 @@
 		{{ form_widget(gameForm.image) }}</p>
 		<p>{{ form_label(gameForm.description) }} <small class="form-text">(Optional)</small>
 		{{ form_widget(gameForm.description) }}</p>
-		<p>{{ form_label(gameForm.url) }} <small class="form-text">(See API documentation)</small>
+		<p>{{ form_label(gameForm.url) }} <small class="form-text">(See <a href="{{ path('app_api_docs') }}">API documentation</a>)</small>
 		{{ form_widget(gameForm.url) }}</p>
 		<p>{{ form_row(gameForm.public) }}</p>
 		<p><button type="submit" class="btn btn-primary">Create</button></p>

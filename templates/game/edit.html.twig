@@ -15,7 +15,7 @@
 		{{ form_widget(gameForm.image) }}</p>
 		<p>{{ form_label(gameForm.description) }} <small class="form-text">(Optional)</small>
 		{{ form_widget(gameForm.description) }}</p>
-		<p>{{ form_label(gameForm.url) }} <small class="form-text">(See API documentation)</small>
+		<p>{{ form_label(gameForm.url) }} <small class="form-text">(See <a href="{{ path('app_api_docs') }}">API documentation</a>)</small>
 		{{ form_widget(gameForm.url) }}</p>
 		<p><label for="apiKey" class="col-form-label">API key</label> <small class="form-text">(Read-only)</small>
 		<input id="apiKey" type="text" value="{{ game.apiKey }}" class="form-control" readonly></p>
