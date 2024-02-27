@@ -9,12 +9,9 @@
 	<h1 class="h3 my-3 font-weight-normal">Editing {{ user.username }}'s permissions</h1>
 
 	{{ form_start(userForm) }}
-		<p>{{ form_label(userForm.loginAllowed) }}
-		{{ form_widget(userForm.loginAllowed) }}</p>
-		<p>{{ form_label(userForm.friendAllowed) }}
-		{{ form_widget(userForm.friendAllowed) }}</p>
-		<p>{{ form_label(userForm.messageAllowed) }}
-		{{ form_widget(userForm.messageAllowed) }}</p>
+		<p>{{ form_row(userForm.loginAllowed) }}</p>
+		<p>{{ form_row(userForm.friendAllowed) }}</p>
+		<p>{{ form_row(userForm.messageAllowed) }}</p>
 		<p><button type="submit" class="btn btn-primary">Update</button></p>
     {{ form_end(userForm) }}
 </div>

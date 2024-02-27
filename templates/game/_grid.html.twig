@@ -1,6 +1,6 @@
 <div class="container text-center">
 	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
-		{% for game in games %}
+		{% for game in games|sort((a, b) => a.title <=> b.title) %}
 			<div class="col">
 				<p><img class="img-fluid" src="{{ asset(game.image) }}"></p>
 				<a href="{{ path('app_game_show', {'id': game.id}) }}">

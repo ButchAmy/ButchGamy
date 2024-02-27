@@ -42,21 +42,23 @@ class UserController extends AbstractController
     public function show_games(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, Request $request): Response
     {
 		if (isset($_POST["request"])) {
-			$this->handleResponse($user, $friendRequestRepository, $entityManager, $_POST["request"]);
+			$this->handleFriendRequest($user, $friendRequestRepository, $entityManager, $_POST["request"]);
+			return $this->redirectToRoute($request->attributes->get('_route'), $request->attributes->get('_route_params'));
 		}
 
         return $this->render('user/show_games.html.twig', [
             'user' => $user,
-			'friendStatus' => $user->friendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
+			'friendStatus' => $user->getFriendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
 			'games' => $user->getGamesDeveloped(),
         ]);
     }
 
 	#[Route('/{id}/achievements', name: 'app_user_show_achievements', methods: ['GET', 'POST'])]
-	public function show_achievements(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, AchievementRepository $achievementRepository, GameResultsRepository $gameResultsRepository): Response
+	public function show_achievements(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, AchievementRepository $achievementRepository, Request $request): Response
     {
 		if (isset($_POST["request"])) {
-			$this->handleResponse($user, $friendRequestRepository, $entityManager, $_POST["request"]);
+			$this->handleFriendRequest($user, $friendRequestRepository, $entityManager, $_POST["request"]);
+			return $this->redirectToRoute($request->attributes->get('_route'), $request->attributes->get('_route_params'));
 		}
 
 		$achievements = $user->getAchievements();
@@ -67,24 +69,25 @@ class UserController extends AbstractController
 
         return $this->render('user/show_achievements.html.twig', [
             'user' => $user,
-			'friendStatus' => $user->friendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
+			'friendStatus' => $user->getFriendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
 			'achievements' => $achievements,
 			'achievementCounts' => $achievementCounts,
         ]);
     }
 
 	#[Route('/{id}/stats', name: 'app_user_show_stats', methods: ['GET', 'POST'])]
-	public function show_stats(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, GameResultsRepository $gameResultsRepository): Response
+	public function show_stats(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, Request $request): Response
     {
 		if (isset($_POST["request"])) {
-			$this->handleResponse($user, $friendRequestRepository, $entityManager, $_POST["request"]);
+			$this->handleFriendRequest($user, $friendRequestRepository, $entityManager, $_POST["request"]);
+			return $this->redirectToRoute($request->attributes->get('_route'), $request->attributes->get('_route_params'));
 		}
 
 		$playedCount = $user->getPlayedCount();
 
         return $this->render('user/show_stats.html.twig', [
             'user' => $user,
-			'friendStatus' => $user->friendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
+			'friendStatus' => $user->getFriendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
 			'gameResults' => $user->getGameResults(),
 			'playedCount' => $playedCount,
         ]);
@@ -173,7 +176,7 @@ class UserController extends AbstractController
         ]);
     }
 
-	public function handleResponse(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, string $response): static
+	public function handleFriendRequest(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, string $response): static
 	{
 		if ($response == "send") {
 			/** @var $appUser User */

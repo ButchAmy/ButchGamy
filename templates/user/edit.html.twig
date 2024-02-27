@@ -9,19 +9,19 @@
 	<h1 class="h3 my-3 font-weight-normal">Editing {{ user.username }}'s profile</h1>
 
 	{{ form_start(userForm) }}
-		<p>{{ form_label(userForm.username) }}<br>
+		<p>{{ form_label(userForm.username) }}
 		{{ form_widget(userForm.username) }}</p>
-		<p>{{ form_label(userForm.profilePic) }} <small>(Recommended: 50x50)</small><br>
-		{{ form_widget(userForm.profilePic) }}{{ form_widget(userForm.profilePicReset) }} <small>Delete current profile picture</small></p>
-		<p>{{ form_label(userForm.birthday) }} <small>(Optional)</small><br>
+		<p>{{ form_label(userForm.profilePic) }} <small class="form-text">(Recommended: 50x50)</small>
+		{{ form_widget(userForm.profilePic) }}{{ form_row(userForm.profilePicReset) }}</p>
+		<p>{{ form_label(userForm.birthday) }} <small class="form-text">(Optional)</small>
 		{{ form_widget(userForm.birthday) }}</p>
-		<p>{{ form_label(userForm.gender) }} <small>(Optional)</small><br>
+		<p>{{ form_label(userForm.gender) }} <small class="form-text">(Optional)</small>
 		{{ form_widget(userForm.gender) }}</p>
-		<p>{{ form_label(userForm.profileBio) }} <small>(Optional)</small><br>
+		<p>{{ form_label(userForm.profileBio) }} <small class="form-text">(Optional)</small>
 		{{ form_widget(userForm.profileBio) }}</p>
-		<p>{{ form_label(userForm.newPassword.first) }} <small>(Optional)</small><br>
+		<p>{{ form_label(userForm.newPassword.first) }} <small class="form-text">(Optional)</small>
 		{{ form_widget(userForm.newPassword.first) }}</p>
-		<p>{{ form_label(userForm.newPassword.second) }}<br>
+		<p>{{ form_label(userForm.newPassword.second) }}
 		{{ form_widget(userForm.newPassword.second) }}</p>
 		<p><button type="submit" class="btn btn-primary">Update</button></p>
     {{ form_end(userForm) }}

@@ -97,6 +97,16 @@ class Conversation
 		return $mostRecentMessageTime;
 	}
 
+	public function isUnreadFor(User $appUser): bool
+	{
+		$displayMessage = $this->getDisplayMessageFor($appUser);
+		if ($displayMessage->getUserTo() === $appUser) {
+			return $displayMessage->isUnread();
+		}
+		return false;
+	}
+
+
 	public function getDisplayMessageFor(User $appUser): ?Message
 	{
 		// Returns preview message to display in inbox. Returns the earliest unread message if there are any, otherwise returns the most recent message.
@@ -108,5 +118,26 @@ class Conversation
 			}
 		}
 		return $this->getMessages()->last();
+	}
+
+	public function getOtherUser(User $appUser): ?User
+	{
+		// Hacky method of retrieving the second member in the conversation from the first member's perspective
+		foreach ($this->getUsers() as $user) {
+			if ($user != $appUser) {
+				return $user;
+			}
+		}
+	}
+
+	public function markAsReadFor(User $appUser): static
+	{
+		// Marks all messages intended for the viewing user as read
+		foreach ($this->getMessages() as $message) {
+			if ($message->getUserTo() === $appUser) {
+				$message->setUnread(false);
+			}
+		}
+		return $this;
 	}
 }

@@ -1,10 +1,6 @@
 <div><a href="{{ path('app_user_index') }}">Back to index</a></div>
 <form class="my-3" method="post">
-	{% if user.profilePic %}
-		<img src="{{ asset(user.profilePic) }}" height="50px" width="50px">
-	{% else %}
-		<img src="{{ asset('assets/images/default.webp') }}" height="50px" width="50px">
-	{% endif %}
+	<img src="{{ asset(user.profilePic|default('assets/images/default.webp')) }}" height="50px" width="50px">
 	<span class="h1 align-bottom">{{ user.username }}</span>
 	{% if app.user == user %}
 		<a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-sm btn-primary align-bottom">Edit profile</a>
@@ -16,7 +12,7 @@
 		<button class="btn btn-sm btn-success align-bottom" type="submit" name="request" value="accept">Accept friend request</button>
 		<button class="btn btn-sm btn-danger align-bottom" type="submit" name="request" value="refuse">Refuse friend request</button>
 	{% elseif friendStatus == 3 %}
-		<a href="#" class="btn btn-sm btn-info align-bottom">Send message</a>
+		<a href="{{ path('app_inbox_new') }}?to={{ user.id }}" class="btn btn-sm btn-info align-bottom">Send new message</a>
 	{% endif %}
 	{% if app.user.admin %}
 		<a href="{{ path('app_user_edit_admin', {'id': user.id}) }}" class="btn btn-sm btn-primary align-bottom">Edit permissions</a>

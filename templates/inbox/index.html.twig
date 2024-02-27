@@ -4,6 +4,42 @@
 
 {% block body %}
 <div class="container">
-
+	<div id="friend-requests" class="my-3">
+		{% for friend_request in friend_requests %}
+			<form class="d-flex" method="post">
+				<img src="{{ asset(friend_request.userFrom.profilePic|default('assets/images/default.webp')) }}" height="32px" width="32px">
+				<span class="h3 mx-1 flex-grow-1"><a href="{{ path('app_user_show', {'id': friend_request.userFrom.id}) }}">{{ friend_request.userFrom.username }}</a> has sent you a friend request!</span>
+				<input type="hidden" name="request_id" value="{{ friend_request.id }}">
+				<button class="btn btn-sm btn-success mx-1" type="submit" name="request" value="accept">Accept friend request</button>
+				<button class="btn btn-sm btn-danger mx-1" type="submit" name="request" value="refuse">Refuse friend request</button>
+			</form>
+		{% else %}
+			<div class="d-flex justify-content-center">
+				<em>You have no new friend requests.</em>
+			</div>
+		{% endfor %}
+	</div>
+	<hr>
+	<div id="conversations" class="my-3">
+		{% for conversation in conversations|sort((a, b) => b.updatedOn <=> a.updatedOn)%}
+			<div class="card {% if conversation.unreadFor(app.user) %} border-primary {% endif %} mb-3">
+				<div class="card-header {% if conversation.unreadFor(app.user) %} text-bg-primary {% endif %}">
+					<a href="{{ path('app_inbox_show', {'id': conversation.id}) }}" >Conversation with {{ conversation.otherUser(app.user).username }}</a>
+				</div>
+				<div class="card-body">
+					<div class="card-title">
+						<img src="{{ asset(conversation.displayMessageFor(app.user).userFrom.profilePic|default('assets/images/default.webp')) }}" height="28px" width="28px">
+						<span class="h4 align-bottom">{{ conversation.displayMessageFor(app.user).userFrom.username }}</span>
+						<small class="align-bottom">{{ conversation.displayMessageFor(app.user).createdOn ? conversation.displayMessageFor(app.user).createdOn|date('Y-m-d H:i:s') : '' }}</small>
+					</div>
+					<p class="card-text">{{ conversation.displayMessageFor(app.user).content }}</p>
+				</div>
+			</div>
+		{% else %}
+			<div class="d-flex justify-content-center">
+				<em>You are not in any active conversations.</em>
+			</div>
+		{% endfor %}
+	</div>
 </div>
 {% endblock %}

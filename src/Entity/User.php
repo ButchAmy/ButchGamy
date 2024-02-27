@@ -8,7 +8,9 @@ use App\Repository\GameResultsRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\LazyCriteriaCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -75,6 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $gameResults;
 
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'friends')]
+	#[ORM\OrderBy(['username' => 'ASC'])]
     private Collection $friends;
 
 	#[ORM\OneToMany(mappedBy: 'userTo', targetEntity: FriendRequest::class, orphanRemoval: true)]
@@ -384,8 +387,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	/**
      * @return Collection<int, FriendRequest>
      */
-    public function getFriendRequestsReceived(): Collection
+    public function getFriendRequestsReceived(bool $unreadOnly = false): Collection
     {
+		if ($unreadOnly) {
+			$criteria = Criteria::create()->where(Criteria::expr()->eq('accepted', false));
+			/** @var $collection LazyCriteriaCollection */
+			$collection = $this->getFriendRequestsReceived(false);
+			return $collection->matching($criteria);
+		}
         return $this->friendRequestsReceived;
     }
 
@@ -441,7 +450,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-	public function friendStatus(User $appUser, FriendRequestRepository $friendRequestRepository): int
+	public function getFriendStatus(User $appUser, FriendRequestRepository $friendRequestRepository): int
 				{
                		// Checks if this user and target user are friends and what the state is of a friend request between them, if it exists
                		// This is intended to be checked on the user being viewed; in other words, "appUser" refers to "$this->getUser()" aka the viewing user
@@ -505,10 +514,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 			}
 		}
 		foreach ($this->getConversations() as $conversation) {
-			if ($conversation->getDisplayMessageFor($this)->isUnread()) {
+			if ($conversation->isUnreadFor($this)) {
 				$count++;
 			}
 		}
 		return $count;
+	}
+
+	public function getTestName(User $user): string
+	{
+		return $user->getUsername();
 	}
 }

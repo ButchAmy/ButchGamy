@@ -3,7 +3,37 @@
 {% block title %}ButchGamy - Conversation with {{ user.username }}{% endblock %}
 
 {% block body %}
-<div class="container">
-
+<div class="container my-3">
+	<div class="mb-3"><a href="{{ path('app_inbox_index') }}">Back to inbox</a></div>
+	{% for message in messages %}
+		<div class="card mb-3">
+			<div class="card-body">
+				<div class="card-title">
+					<img src="{{ asset(message.userFrom.profilePic|default('assets/images/default.webp')) }}" height="28px" width="28px">
+					<span class="h4 align-bottom"><a href="{{ path('app_user_show', {'id': message.userFrom.id}) }}">{{ message.userFrom.username }}</a></span>
+					<small class="align-bottom">{{ message.createdOn|date('Y-m-d H:i:s') }}</small>
+				</div>
+				<p class="card-text">{{ message.content }}</p>
+			</div>
+		</div>
+	{% endfor %}
+	{% if app.user.messageAllowed %}
+		{% if friendStatus == 3 %}
+			<form class="my-3" method="post">
+				<textarea class="form-control mb-3" name="content" placeholder="Type your message here"></textarea>
+				<button class="btn btn-primary" type="submit">Send</button>
+			</form>
+		{% else %}
+			<div class="my-3">
+				<textarea class="form-control mb-3" disabled placeholder="You can only send messages to friends"></textarea>
+				<button class="btn btn-primary" disabled>Send</button>
+			</div>
+		{% endif %}
+	{% else %}
+		<div class="my-3">
+				<textarea class="form-control mb-3" disabled placeholder="You are banned from sending messages"></textarea>
+				<button class="btn btn-primary" disabled>Send</button>
+		</div>
+	{% endif %}
 </div>
 {% endblock %}

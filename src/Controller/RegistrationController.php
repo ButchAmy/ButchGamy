@@ -36,7 +36,7 @@ class RegistrationController extends AbstractController
 				$profilePicFile = $form->get('profilePic')->getData();
 				// this condition is needed because the 'profile pic' field is not required
             	// so the file must be processed only when a file is uploaded
-            	if ($profilePicFile) {
+				if ($profilePicFile) {
 					$filename = uniqid().'.'.$profilePicFile->guessExtension();
                 // Move the file to the public assets directory
                 try {

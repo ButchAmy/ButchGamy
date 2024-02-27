@@ -40,7 +40,7 @@ class UserType extends AbstractType
 				],
 			])
 			->add('profilePicReset', CheckboxType::class, [
-				'label' => 'Delete profile picture',
+				'label' => 'Reset profile picture',
 				'mapped' => false,
 				'required' => false,
 			])

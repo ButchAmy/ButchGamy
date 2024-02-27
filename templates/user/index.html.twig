@@ -17,11 +17,7 @@
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
 			{% for user in users|sort((a, b) => a.username <=> b.username) %}
 				<div class="col">
-					{% if user.profilePic %}
-						<img src="{{ asset(user.profilePic) }}" height="50px" width="50px">
-					{% else %}
-						<img src="{{ asset('assets/images/default.webp') }}" height="50px" width="50px">
-					{% endif %}
+					<img src="{{ asset(user.profilePic|default('assets/images/default.webp')) }}" height="50px" width="50px">
 					<span class="h1 align-bottom"><a href="{{ path('app_user_show', {'id': user.id}) }}">{{ user.username }}</a></span>
 				</div>
 			{% else %}

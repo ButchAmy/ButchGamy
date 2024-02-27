@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ButchGamy - New message{% endblock %}
+
+{% block body %}
+<div class="container">
+	{{ form_errors(messageForm) }}
+
+	<h1 class="h3 my-3 font-weight-normal">Send new message</h1>
+
+    {{ form_start(messageForm) }}
+		<p>{{ form_row(messageForm.userTo) }}</p>
+		{% if app.user.messageAllowed %}
+			<p>{{ form_widget(messageForm.content) }}</p>
+			<p><button type="submit" class="btn btn-primary">Send</button></p>
+		{% else %}
+			<p>{{ form_widget(messageForm.content, {'attr': {'disabled': true, 'placeholder': 'You are banned from sending messages'}}) }}</p>
+			<p><button class="btn btn-primary" disabled>Send</button></p>
+		{% endif %}
+    {{ form_end(messageForm) }}
+</div>
+
+{% endblock %}
