@@ -7,7 +7,6 @@ use App\Entity\FriendRequest;
 use App\Entity\Message;
 use App\Entity\User;
 use App\Form\MessageType;
-use App\Repository\ConversationRepository;
 use App\Repository\FriendRequestRepository;
 use App\Repository\UserRepository;
 use DateTimeImmutable;

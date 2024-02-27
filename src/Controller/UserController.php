@@ -10,7 +10,6 @@ use App\Repository\AchievementRepository;
 use DateTimeImmutable;
 use App\Repository\UserRepository;
 use App\Repository\FriendRequestRepository;
-use App\Repository\GameResultsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -117,7 +116,7 @@ class UserController extends AbstractController
 						$filename
 					);
                 } catch (FileException $e) {
-					// ... handle exception if something happens during file upload
+					throw $e;
 				}
 				$user->setProfilePic('assets/images/users/' . $filename);
 			}

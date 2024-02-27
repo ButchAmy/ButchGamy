@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ConversationRepository;
 use App\Repository\FriendRequestRepository;
-use App\Repository\GameResultsRepository;
+use App\Repository\GameResultRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -73,7 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'developer', targetEntity: Game::class, orphanRemoval: true)]
     private Collection $gamesDeveloped;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: GameResults::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: GameResult::class, orphanRemoval: true)]
     private Collection $gameResults;
 
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'friends')]
@@ -331,14 +331,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, GameResults>
+     * @return Collection<int, GameResult>
      */
     public function getGameResults(): Collection
     {
         return $this->gameResults;
     }
 
-    public function addGameResult(GameResults $gameResult): static
+	/**
+     * @return Collection<int, GameResult>
+     */
+	public function getGameResultsFor(Game $game): Collection
+    {
+		$criteria = Criteria::create()->where(Criteria::expr()->eq('game', $game));
+		/** @var $collection LazyCriteriaCollection */
+		$collection = $this->getGameResults();
+        return $collection->matching($criteria);
+    }
+
+    public function addGameResult(GameResult $gameResult): static
     {
         if (!$this->gameResults->contains($gameResult)) {
             $this->gameResults->add($gameResult);
@@ -348,7 +359,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeGameResult(GameResults $gameResult): static
+    public function removeGameResult(GameResult $gameResult): static
     {
         if ($this->gameResults->removeElement($gameResult)) {
             // set the owning side to null (unless already changed)
@@ -426,6 +437,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getAchievements(): Collection
     {
         return $this->achievements;
+    }
+
+	/**
+     * @return Collection<int, Achievement>
+     */
+	public function getAchievementsFor(Game $game): Collection
+    {
+		$criteria = Criteria::create()->where(Criteria::expr()->eq('game', $game));
+		/** @var $collection LazyCriteriaCollection */
+		$collection = $this->getAchievements();
+        return $collection->matching($criteria);
     }
 
     public function addAchievement(Achievement $achievement): static

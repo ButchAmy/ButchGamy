@@ -45,7 +45,7 @@ class RegistrationController extends AbstractController
                         $filename
                     );
                 } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    throw $e;
                 }
                 $user->setProfilePic('assets/images/users/' . $filename);
 			};

@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\GameResultsRepository;
+use App\Repository\GameResultRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: GameResultsRepository::class)]
-class GameResults
+#[ORM\Entity(repositoryClass: GameResultRepository::class)]
+class GameResult
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

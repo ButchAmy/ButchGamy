@@ -7,8 +7,7 @@ use App\Entity\User;
 use App\Form\GameType;
 use App\Repository\AchievementRepository;
 use DateTimeImmutable;
-use App\Repository\GameRepository;
-use App\Repository\GameResultsRepository;
+use App\Repository\GameResultRepository;
 use CMEN\GoogleChartsBundle\GoogleCharts\Charts\LineChart;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,7 +44,7 @@ class GameController extends AbstractController
 						$filename
 					);
                 } catch (FileException $e) {
-					// ... handle exception if something happens during file upload
+					throw $e;
 				}
 				$game->setImage('assets/images/games/' . $filename);
 			}
@@ -94,7 +93,7 @@ class GameController extends AbstractController
     }
 
 	#[Route('/{id}/achievements', name: 'app_game_show_achievements', methods: ['GET'])]
-    public function show_achievements(Game $game, AchievementRepository $achievementRepository, GameResultsRepository $gameResultsRepository): Response
+    public function show_achievements(Game $game, AchievementRepository $achievementRepository, GameResultRepository $gameResultRepository): Response
     {
 		/** @var $appUser User */
 		$appUser = $this->getUser();
@@ -108,7 +107,7 @@ class GameController extends AbstractController
 		$achievements = $game->getUniqueAchievements();
 		$achievementCounts = [];
 		foreach ($achievements as $achievement) {
-			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getPlayerCount($gameResultsRepository);
+			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getPlayerCount($gameResultRepository);
 		}
 		
         return $this->render('game/show_achievements.html.twig', [
@@ -174,7 +173,7 @@ class GameController extends AbstractController
 						$filename
 					);
                 } catch (FileException $e) {
-					// ... handle exception if something happens during file upload
+					throw $e;
 				}
 				$game->setImage('assets/images/games/' . $filename);
 			}

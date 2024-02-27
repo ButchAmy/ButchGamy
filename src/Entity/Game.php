@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\GameRepository;
-use App\Repository\GameResultsRepository;
+use App\Repository\GameResultRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -48,7 +48,7 @@ class Game
     #[ORM\OneToMany(mappedBy: 'game', targetEntity: Achievement::class, orphanRemoval: true)]
     private Collection $achievements;
 
-    #[ORM\OneToMany(mappedBy: 'game', targetEntity: GameResults::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'game', targetEntity: GameResult::class, orphanRemoval: true)]
     private Collection $gameResults;
 
     public function __construct()
@@ -218,14 +218,14 @@ class Game
     }
 
     /**
-     * @return Collection<int, GameResults>
+     * @return Collection<int, GameResult>
      */
     public function getGameResults(): Collection
     {
         return $this->gameResults;
     }
 
-    public function addGameResult(GameResults $gameResult): static
+    public function addGameResult(GameResult $gameResult): static
     {
         if (!$this->gameResults->contains($gameResult)) {
             $this->gameResults->add($gameResult);
@@ -235,7 +235,7 @@ class Game
         return $this;
     }
 
-    public function removeGameResult(GameResults $gameResult): static
+    public function removeGameResult(GameResult $gameResult): static
     {
         if ($this->gameResults->removeElement($gameResult)) {
             // set the owning side to null (unless already changed)
