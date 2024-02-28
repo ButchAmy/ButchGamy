@@ -65,7 +65,14 @@
 		<footer class="footer mt-auto py-3 bg-body-tertiary fixed-bottom">
 		{% block footer %}
 		<div class="container-fluid">
-			<span class="text-body-secondary">&copy; 2024 ButchAmy, all rights reserved.</span>
+			<div class="d-flex justify-content-between">
+				<span class="text-body-secondary">&copy; 2024 ButchAmy, all rights reserved.</span>
+				<span class="text-body-secondary">
+					<a href="{{ path('app_api_docs') }}" class="ms-2">API</a>
+					<a href="https://butchamy.tumblr.com/" class="ms-2">Tumblr</a>
+					<a href="https://twitter.com/Gilboron/" class="ms-2">Twitter</a>
+				</span>
+			</div>
 		</div>
 		{% endblock %}
 		</footer>

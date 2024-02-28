@@ -1,0 +1,241 @@
+{
+	"info": {
+		"_postman_id": "7bf2cbb4-394b-4ea5-822f-f32e55b0185d",
+		"name": "ButchGamy API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30373558"
+	},
+	"item": [
+		{
+			"name": "Achievement",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "apiKey",
+							"value": "",
+							"description": "Game API key; found in the game's edit page.",
+							"type": "text"
+						},
+						{
+							"key": "userId",
+							"value": "",
+							"description": "User ID; provided through \"userId\" GET parameter.",
+							"type": "text"
+						},
+						{
+							"key": "hash",
+							"value": "",
+							"description": "For verification; provided through \"hash\" GET parameter.",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "",
+							"description": "Achievement's unique identifier. Ensure consistent spelling!",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "",
+							"description": "Achievement's description. Max length is 255.",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"value": "",
+							"description": "Achievement's image, as URL. Recommended resolution is 64x64.",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{endpoint}}/achievement",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"achievement"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Game Result",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "apiKey",
+							"value": "",
+							"description": "Game API key; found in the game's edit page.",
+							"type": "text"
+						},
+						{
+							"key": "userId",
+							"value": "",
+							"description": "User ID; provided through \"userId\" GET parameter.",
+							"type": "text"
+						},
+						{
+							"key": "hash",
+							"value": "",
+							"description": "For verification; provided through \"hash\" GET parameter.",
+							"type": "text"
+						},
+						{
+							"key": "score",
+							"value": "",
+							"description": "User's score, as an integer.",
+							"type": "text"
+						},
+						{
+							"key": "time",
+							"value": "",
+							"description": "User's time in seconds, as an integer.",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{endpoint}}/result",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"result"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Achievements",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}/user/:userId/achievements?apiKey",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"achievements"
+					],
+					"query": [
+						{
+							"key": "apiKey",
+							"value": null,
+							"description": "Game API key; found in the game's edit page."
+						}
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "",
+							"description": "User ID; provided through \"userId\" GET parameter."
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Game Results",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}/user/:userId/results?apiKey",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"results"
+					],
+					"query": [
+						{
+							"key": "apiKey",
+							"value": null,
+							"description": "Game API key; found in the game's edit page."
+						}
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "",
+							"description": "User ID; provided through \"userId\" GET parameter."
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}/user/:userId",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"user",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "",
+							"description": "User ID; provided through \"userId\" GET parameter."
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}

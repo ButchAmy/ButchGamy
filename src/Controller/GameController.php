@@ -149,7 +149,9 @@ class GameController extends AbstractController
 			/** @var UploadedFile $imageFile */
 			$imageFile = $form->get('image')->getData();
 			if ($imageFile) {
-				unlink($game->getImage());
+				if (file_exists($game->getImage())) {
+					unlink($game->getImage());
+				}
 				$filename = uniqid().'.'.$imageFile->guessExtension();
 				try {
 					$imageFile->move(
@@ -183,7 +185,9 @@ class GameController extends AbstractController
 		}
 
         if ($this->isCsrfTokenValid('delete'.$game->getId(), $request->request->get('_token'))) {
-			unlink($game->getImage());
+			if (file_exists($game->getImage())) {
+				unlink($game->getImage());
+			}
             $entityManager->remove($game);
             $entityManager->flush();
         }

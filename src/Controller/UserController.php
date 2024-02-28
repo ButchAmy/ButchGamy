@@ -107,7 +107,9 @@ class UserController extends AbstractController
 			$profilePicFile = $form->get('profilePic')->getData();
 			if ($profilePicFile) {
 				if ($user->getProfilePic()) {
-					unlink($user->getProfilePic());
+					if (file_exists($user->getProfilePic())) {
+						unlink($user->getProfilePic());
+					}
 				}
 				$filename = uniqid().'.'.$profilePicFile->guessExtension();
 				try {

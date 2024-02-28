@@ -9,61 +9,65 @@
 		<h1>ButchGamy API documentation</h1>
 		<p>
 			<strong>Endpoint:</strong>
-			<a href="{{ app.request.getSchemeAndHttpHost() }}/api" target="_blank">{{ app.request.getSchemeAndHttpHost() }}/api</a>
+			<a href="{{ app.request.schemeAndHttpHost }}/api" target="_blank">{{ app.request.schemeAndHttpHost }}/api</a>
 		</p>
 		<p>When a user clicks the button to play your game, they will be sent to your given URL, together with a generated hash and salt for that session.</p>
-		<p>All requests made by your game require at least the following parameters:
+		<p>All <strong>POST</strong> requests made by your game require at least the following parameters:
 			<ul>
 				<li>apiKey <em>(your game's API key; found in the game's edit page)</em></li>
 				<li>userId <em>(the player's ID; provided in the 'userId' GET parameter)</em></li>
 				<li>hash <em>(the security hash; provided in the 'hash' GET parameter)</em></li>
 			</ul>
 		</p>
-		<h2>Game Results</h2>
-			<ul>
-				<li>
-					GET /result
-					<p>Returns all results for the current user.</p>
-				</li>
-				<li>
-					GET /result/last
-					<p>Returns the most recently attained result for the current user.</p>
-				</li>
-				<li>
-					POST /result
-					<p>
-						Posts a new result for the current user. Requires the following parameters:
-						<ul>
-							<li>score <em>(int)</em></li>
-							<li>time <em>(int; in seconds)</em></li>
-						</ul>
-					</p>
-				</li>
-			</ul>
 		<h2>Achievements</h2>
-			<ul>
-				<li>
-					GET /achievement
-					<p>Returns all achievements for the current user.</p>
-				</li>
-				<li>
-					POST /achievement
-					<p>
-						Unlocks achievement for the current user; returns (value) as false if the achievement is already unlocked. Requires the following parameters:
-						<ul>
-							<li>name <em>(the achievement's unique identifier)</em></li>
-							<li>description <em>(keep it snappy; max length 255)</em></li>
-							<li>image <em>(as url; recommended 64x64)</em></li>
-						</ul>
-					</p>
-				</li>
-			</ul>
+		<ul>
+			<li>
+				POST /achievement
+				<p>
+					Unlocks achievement for the current user; returns "new" as false if the achievement is already unlocked. Requires the following parameters in addition to the ones listed above:
+					<ul>
+						<li>name <em>(the achievement's unique identifier)</em></li>
+						<li>description <em>(keep it snappy; max length 255)</em></li>
+						<li>image <em>(as url; recommended 64x64)</em></li>
+					</ul>
+				</p>
+			</li>
+		</ul>
+		<h2>Game Results</h2>
+		<ul>
+			<li>
+				POST /result
+				<p>
+					Posts a new result for the current user. Requires the following parameters in addition to the ones listed above:
+					<ul>
+						<li>score <em>(int)</em></li>
+						<li>time <em>(int; in seconds)</em></li>
+					</ul>
+				</p>
+			</li>
+		</ul>
+
+
 		<h2>Users</h2>
-			<ul>
-				<li>
-					GET /user
-					<p>Returns the username and profile picture (as URL) for the current user.</p>
-				</li>
-			</ul>
+		<ul>
+			<li>
+				GET /user/{userId}
+				<p>Returns the username and profile picture (as URL) for the specified user.</p>
+			</li>
+			<li>
+				GET /user/{userId}/achievements?apiKey={apiKey}
+				<p>Returns the achievements that the specified user has for the current game. API key is required.</p>
+			</li>
+			<li>
+				GET /user/{userId}/results?apiKey={apiKey}
+				<p>Returns the game results that the specified user has for the current game. API key is required.</p>
+			</li>
+		</ul>
+		<h1>ButchGamy API for Postman</h1>
+		<p>
+			If you prefer to check out the API in Postman, import
+			<a href="{{ asset('assets/jsons/ButchGamy API.postman_collection.json') }}">this file</a>
+			to your Postman workspace.
+		</p>
 	</body>
 </html>
