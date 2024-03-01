@@ -41,9 +41,8 @@ class ApiController extends AbstractController
 			$this->checkHash($game, $user, $_POST['hash']);
 			// Does the User already have this achievement?
 			foreach ($user->getAchievementsFor($game) as $achievement) {
-				if ($achievement->getName() === $_POST['name']) {
+				if ($achievement->getName() == $_POST['name']) {
 					return $this->json([
-						'status' => 'OK',
 						'new' => false,
 					]);
 				}
@@ -62,7 +61,6 @@ class ApiController extends AbstractController
 			$entityManager->flush();
 			// Return response with variable true
 			return $this->json([
-				'status' => 'OK',
 				'new' => true,
 			]);
 		} catch (BadRequestException $e) {
@@ -90,9 +88,7 @@ class ApiController extends AbstractController
 			$entityManager->persist($gameResult);
 			$entityManager->flush();
 			// Return response
-			return $this->json([
-				'status' => 'OK',
-			]);
+			return $this->json([]);
 		} catch (BadRequestException $e) {
 			throw $e;
 		}
@@ -131,15 +127,6 @@ class ApiController extends AbstractController
 			'results' => $user->getGameResultsFor($game),
 		]);
     }
-
-	#[Route('/test', name: 'app_test', methods: ['POST'])]
-	public function api_test(): Response
-	{
-		return $this->json([
-			'status' => 'OK',
-			'new' => true,
-		]);
-	}
 
 	public function checkHash(Game $game, User $user, string $hash): static
 	{

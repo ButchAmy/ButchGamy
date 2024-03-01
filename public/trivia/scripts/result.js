@@ -17,8 +17,6 @@ async function handleResults() {
 		method: "POST",
 		body: formData,
 	});
-
-	console.log(response);
 }
 
 async function drawResults() {

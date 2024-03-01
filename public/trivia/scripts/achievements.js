@@ -6,7 +6,7 @@ async function unlockKnowitallAchievement() {
 	let description = "Get a perfect score without choosing a specific category.";
 	let image = "https://wiki.teamfortress.com/w/images/1/18/Tf_play_game_everyclass.png";
 
-	return await unlockAchievement(name, description, image); // uf true, display notification
+	return await unlockAchievement(name, description, image); // if true, display notification
 }
 
 // If quiz complete with perfect score on Hard difficulty
@@ -15,7 +15,7 @@ async function unlockDoctorateAchievement() {
 	let description = "Get a perfect score while playing on the Hard difficulty.";
 	let image = "https://wiki.teamfortress.com/w/images/e/e7/Tf_complete_training.png";
 
-	return await unlockAchievement(name, description, image); // uf true, display notification
+	return await unlockAchievement(name, description, image); // if true, display notification
 }
 
 // If quiz complete with 0 correctCount and 0 wrongCount
@@ -24,7 +24,7 @@ async function unlockSocratesAchievement() {
 	let description = "The only thing I know is that I know nothing.";
 	let image = "https://wiki.teamfortress.com/w/images/8/8a/Tf_medic_top_scoreboard.png";
 
-	return await unlockAchievement(name, description, image); // uf true, display notification
+	return await unlockAchievement(name, description, image); // if true, display notification
 }
 
 // Generic achievement unlock function; should be called only from other achievement functions!
