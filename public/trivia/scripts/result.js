@@ -17,12 +17,13 @@ async function handleResults() {
 		method: "POST",
 		body: formData,
 	});
+
+	if (response.status === 200) {
+		await drawResults();
+	}
 }
 
 async function drawResults() {
-	// Display waiting message
-	document.querySelector("#display").innerHTML = "Calculating your result...";
-
 	// Retrieve template from HTML
 	let template = document.querySelector("#result-template").content.cloneNode(true);
 

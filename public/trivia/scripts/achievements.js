@@ -41,6 +41,7 @@ async function unlockAchievement(name, description, image) {
 		method: "POST",
 		body: formData,
 	});
+	let json = await response.json();
 
-	return response.new; // true if this is a new achievement for the user
+	return json.new; // true if this is a new achievement for the user
 }

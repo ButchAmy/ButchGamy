@@ -42,8 +42,8 @@ async function drawQuestion(index) {
 
 	if (index == 10) {
 		stopStopwatch();
+		document.querySelector("#display").innerHTML = "Calculating your result...";
 		await handleResults();
-		await drawResults();
 		return;
 	}
 

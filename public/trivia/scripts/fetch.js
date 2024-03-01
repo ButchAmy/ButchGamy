@@ -45,7 +45,7 @@ async function fetchQuestions() {
 
 	// Fetch questions
 	let response = await fetch(TRIVIA + ".php?amount=10&type=multiple&difficulty=" + difficulty + "&category=" + category);
-	json = await response.json();
+	let json = await response.json();
 
 	// Store questions in global
 	questionArray = json.results;
