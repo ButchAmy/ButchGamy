@@ -1,10 +1,7 @@
 // API constants
 const TRIVIA = "https://opentdb.com/api"; // endpoint for the Open Trivia API
+const BUTCHGAMY = "https://106710.cvoatweb.be/ButchGamy/public/api"; // endpoint for the ButchGamy API
 const API_KEY = "65df2c54e895e9.42604372"; // key used for the ButchGamy API
-
-// Reconstruct API url from base url
-let urlArray = window.location.href.split("/");
-const BUTCHGAMY = urlArray[0] + "//" + urlArray[1] + "/api"; // endpoint for the ButchGamy API
 
 // Parameter constants
 const PARAMS = new URLSearchParams(document.location.search);
