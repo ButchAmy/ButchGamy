@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Open Trivia</title>
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+		<script src="trivia/scripts/achievements.js" defer async></script>
+		<script src="trivia/scripts/fetch.js" defer async></script>
+		<script src="trivia/scripts/result.js" defer async></script>
+		<script src="trivia/scripts/score.js" defer async></script>
+		<script src="trivia/scripts/timer.js" defer async></script>
+		<script src="trivia/index.js" defer async></script>
+	</head>
+	<body>
+		<div id="header-result" class="w3-container w3-center w3-display-topmiddle w3-cell-row w3-hide" style="width: 20%">
+			<div class="w3-cell w3-padding">
+				<div class="w3-xlarge">Score</div>
+				<div class="w3-large" id="display-score">0</div>
+			</div>
+			<div class="w3-cell w3-padding">
+				<div class="w3-xlarge">Time</div>
+				<div class="w3-large" id="display-time">0:00</div>
+			</div>
+		</div>
+
+		<div id="header-title" class="w3-container w3-center w3-display-topmiddle">
+			<h1>Welcome to Open Trivia!</h1>
+		</div>
+
+		<div id="display" class="w3-container w3-center w3-display-middle" style="width: 40%; padding-bottom: 64px">
+			<p>Ready to test your knowledge skills, <span id="username">DEFAULT_USER</span>?</p>
+			<p>You will be presented with <strong>10</strong> multiple choice questions.</p>
+			<p>Just choose your difficulty, optionally select a category, then hit Start!</p>
+			<p>
+				<p>
+					<input class="w3-radio" type="radio" name="select-difficulty" id="easy" value="easy" checked />
+					<label for="easy">Easy</label>
+					<input class="w3-radio" type="radio" name="select-difficulty" id="medium" value="medium" />
+					<label for="medium">Medium</label>
+					<input class="w3-radio" type="radio" name="select-difficulty" id="hard" value="hard" />
+					<label for="hard">Hard</label>
+				</p>
+				<p>
+					<select class="w3-select w3-border w3-padding" style="width: 320px" id="select-category">
+						<option value="0" selected>Any Category</option>
+					</select>
+				</p>
+				<p>
+					<button class="w3-button w3-light-gray" id="start">Start</button>
+				</p>
+			</p>
+		</div>
+
+		<div id="rules" class="w3-container w3-center w3-display-bottommiddle">
+			<h3>Rules</h3>
+			<p>Selecting the right answer will net you points.</p>
+			<p>Selecting the <em>wrong</em> answer will deduct points.</p>
+			<p>Select "I don't know" to play it safe!</p>
+		</div>
+
+		<template id="question-template">
+			<h2>Question <span id="index">1</span></h2>
+			<em>Difficulty: <span id="display-difficulty">Medium</span> - Category: <span id="display-category">Entertainment: Television</span></em>
+			<hr />
+			<p id="question" class="w3-margin">Dee from &quot;It&#039;s Always Sunny in Philadelphia&quot; has dated all of the following guys EXCEPT</p>
+			<p>
+				<button class="w3-button w3-light-gray w3-margin-bottom" style="min-width: 320px" id="answer">Answer 1</button><br />
+				<button class="w3-button w3-light-gray w3-margin-bottom" style="min-width: 320px" id="answer">Answer 2</button><br />
+				<button class="w3-button w3-light-gray w3-margin-bottom" style="min-width: 320px" id="answer">Answer 3</button><br />
+				<button class="w3-button w3-light-gray w3-margin-bottom" style="min-width: 320px" id="answer">Answer 4</button><br />
+				<button class="w3-button w3-light-gray w3-margin-bottom" style="min-width: 320px" id="skip">I don't know</button><br />
+			</p>
+		</template>
+
+		<template id="result-template">
+			<h2>Finished!</h2>
+			<p>You gave the correct answer <strong id="correct-count">0</strong> times. You gave the wrong answer <strong id="wrong-count">0</strong> times.</p>
+			<p>Your final score is <strong id="final-score" class="w3-large">1000</strong>!</p>
+			<p id="commentary"></p>
+			<hr>
+			<p>
+				<em id="achievements" class="w3-hide">You also unlocked the following achievements:</em>
+				<p id="achievement-knowitall" class="w3-hide"><strong>Know-it-all:</strong> Get a perfect score without choosing a specific category.</p>
+				<p id="achievement-doctorate" class="w3-hide"><strong>Doctorate:</strong> Get a perfect score while playing on the Hard difficulty.</p>
+				<p id="achievement-socrates" class="w3-hide"><strong>Socrates 2.0:</strong> Answer "I don't know" to every single question.</p>
+			</p>
+			<p>Would you like to <span class="w3-text-blue" id="play-again">play again</span>?</p>
+		</template>
+	</body>
+</html>
