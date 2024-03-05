@@ -66,7 +66,7 @@ async function drawQuestion(index) {
 	template.querySelectorAll("#answer").forEach((element, i) => {
 		element.innerHTML = answers[i];
 		element.addEventListener("click", () => {
-			checkAnswer(element.innerHTML, index);
+			checkAnswer(answers[i], index);
 			drawQuestion(Number(index) + 1);
 		});
 	});
