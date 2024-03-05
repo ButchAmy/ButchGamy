@@ -13,7 +13,7 @@
 			{% for result in gameResults|sort((a, b) => b.score <=> a.score)|slice(0, 9) %}
 				<tr>
 					<th>{{ loop.index }}</th>
-					<td><a href="{{ path('app_user_show', {'id': result.user.id}) }}">{{ result.user.username }}</a></td>
+					<td><a href="{{ path('app_user_show', {'id': result.user.id}) }}?tab=stats">{{ result.user.username }}</a></td>
 					<td>{{ result.score }}</td>
 					<td>{{ macros.secondsToMinutes(result.time) }}</td>
 				</tr>
@@ -26,7 +26,7 @@
 			{% for result in gameResults|sort((a, b) => a.time <=> b.time)|slice(0, 9) %}
 				<tr>
 					<th>{{ loop.index }}</th>
-					<td><a href="{{ path('app_user_show', {'id': result.user.id}) }}">{{ result.user.username }}</a></td>
+					<td><a href="{{ path('app_user_show', {'id': result.user.id}) }}?tab=stats">{{ result.user.username }}</a></td>
 					<td>{{ result.score }}</td>
 					<td>{{ macros.secondsToMinutes(result.time) }}</td>
 				</tr>
@@ -39,7 +39,7 @@
 			{% for result in gameResults|sort((a, b) => random(-1,1))|slice(0, 9) %}
 				<tr>
 					<th>#</th>
-					<td><a href="{{ path('app_user_show', {'id': result.user.id}) }}">{{ result.user.username }}</a></td>
+					<td><a href="{{ path('app_user_show', {'id': result.user.id}) }}?tab=stats">{{ result.user.username }}</a></td>
 					<td>{{ result.score }}</td>
 					<td>{{ macros.secondsToMinutes(result.time) }}</td>
 				</tr>

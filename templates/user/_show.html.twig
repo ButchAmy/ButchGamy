@@ -26,7 +26,7 @@
 		{% if user.birthday %}
 			<tr>
 				<th>Birthday:</th>
-				<td>{{ user.birthday ? user.birthday|date('Y-m-d') : '' }}</td>
+				<td>{{ user.birthday ? user.birthday|date('F j, Y') : '' }}</td>
 			</tr>
 		{% endif %}
 		{% if user.gender %}

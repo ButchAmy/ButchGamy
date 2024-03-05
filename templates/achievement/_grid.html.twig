@@ -4,7 +4,7 @@
 			<div class="col">
 				<p><img src="{{ achievement.image }}" width="64px" height="64px"></p>
 				{% if game|default(null) == null %}
-					<a href="{{ path('app_game_show', {'id': achievement.game.id}) }}">
+					<a href="{{ path('app_game_show', {'id': achievement.game.id}) }}?tab=achievements">
 						<h4>{{ achievement.name }}</h4>
 					</a>
 				{% else %}

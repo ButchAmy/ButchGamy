@@ -44,6 +44,11 @@ class UserController extends AbstractController
 			return $this->redirectToRoute($request->attributes->get('_route'), $request->attributes->get('_route_params'));
 		}
 
+		$tab = 'games';
+		if (isset($_GET['tab'])) {
+			$tab = htmlspecialchars($_GET['tab']);
+		};
+
 		$achievementCounts = [];
 		foreach ($user->getAchievements() as $achievement) {
 			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getUniquePlayerCount();
@@ -55,6 +60,7 @@ class UserController extends AbstractController
 			'games' => $user->getGamesDeveloped(),
 			'achievements' => $user->getAchievements(),
 			'achievementCounts' => $achievementCounts,
+			'tab' => $tab,
         ]);
     }
 

@@ -78,6 +78,11 @@ class GameController extends AbstractController
 		if (isset($_GET['sort'])) {
 			$sort = htmlspecialchars($_GET['sort']);
 		};
+		$tab = 'leaderboard';
+		if (isset($_GET['tab'])) {
+			$tab = htmlspecialchars($_GET['tab']);
+		};
+
 		$achievementCounts = [];
 		foreach ($game->getUniqueAchievements() as $achievement) {
 			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getUniquePlayerCount();
@@ -87,11 +92,12 @@ class GameController extends AbstractController
             'game' => $game,
 			'developer' => $game->getDeveloper(),
 			'gameResults' => $game->getGameResults(),
-			'sort' => $sort,
 			'achievements' => $game->getUniqueAchievements(),
 			'achievementCounts' => $achievementCounts,
 			'playerChart' => $game->getPlayerChart(),
 			'scoreChart' => $game->getScoreChart(),
+			'sort' => $sort,
+			'tab' => $tab,
         ]);
     }
 

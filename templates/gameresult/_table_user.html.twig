@@ -10,7 +10,7 @@
 				<th>Best score in any game:</th>
 				<td>
 					{{ user.gameResults|sort((a, b) => b.score <=> a.score)|first.score }}
-					(in <a href="{{ path('app_game_show', {'id': user.gameResults|sort((a, b) => b.score <=> a.score)|first.game.id}) }}">
+					(in <a href="{{ path('app_game_show', {'id': user.gameResults|sort((a, b) => b.score <=> a.score)|first.game.id}) }}?tab=leaderboard">
 						{{ user.gameResults|sort((a, b) => b.score <=> a.score)|first.game.title }}</a>)
 				</td>
 			</tr>
@@ -18,7 +18,7 @@
 				<th>Best time in any game:</th>
 				<td>
 					{{ macros.secondsToMinutes(user.gameResults|sort((a, b) => a.time <=> b.time)|first.time) }}
-					(in <a href="{{ path('app_game_show', {'id': user.gameResults|sort((a, b) => a.time <=> b.time)|first.game.id}) }}">
+					(in <a href="{{ path('app_game_show', {'id': user.gameResults|sort((a, b) => a.time <=> b.time)|first.game.id}) }}?tab=leaderboard">
 						{{ user.gameResults|sort((a, b) => a.time <=> b.time)|first.game.title }}</a>)
 				</td>
 			</tr>

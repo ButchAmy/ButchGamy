@@ -8,23 +8,23 @@
 		{{ include('game/_show.html.twig') }}
 		<ul class="nav nav-tabs my-3" id="myTab" role="tablist">
 			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="leaderboard-tab" data-bs-toggle="tab" data-bs-target="#leaderboard-tab-pane" type="button" role="tab" aria-controls="leaderboard-tab-pane" aria-selected="true">Leaderboard</button>
+				<button class="nav-link {% if tab == 'leaderboard' %} active {% endif %}" id="leaderboard-tab" data-bs-toggle="tab" data-bs-target="#leaderboard-tab-pane" type="button" role="tab" aria-controls="leaderboard-tab-pane" aria-selected="{% if tab == 'leaderboard' %} true {% else %} false {% endif %}">Leaderboard</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="achievements-tab" data-bs-toggle="tab" data-bs-target="#achievements-tab-pane" type="button" role="tab" aria-controls="achievements-tab-pane" aria-selected="false">Achievements</button>
+				<button class="nav-link {% if tab == 'achievements' %} active {% endif %}" id="achievements-tab" data-bs-toggle="tab" data-bs-target="#achievements-tab-pane" type="button" role="tab" aria-controls="achievements-tab-pane" aria-selected="{% if tab == 'achievements' %} true {% else %} false {% endif %}">Achievements</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-tab-pane" type="button" role="tab" aria-controls="stats-tab-pane" aria-selected="false">Stats</button>
+				<button class="nav-link {% if tab == 'stats' %} active {% endif %}" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-tab-pane" type="button" role="tab" aria-controls="stats-tab-pane" aria-selected="{% if tab == 'stats' %} true {% else %} false {% endif %}">Stats</button>
 			</li>
 		</ul>
 		<div class="tab-content container" id="myTabContent">
-			<div class="tab-pane show active" id="leaderboard-tab-pane" role="tabpanel" aria-labelledby="leaderboard-tab" tabindex="0">
+			<div class="tab-pane {% if tab == 'leaderboard' %} show active {% endif %}" id="leaderboard-tab-pane" role="tabpanel" aria-labelledby="leaderboard-tab" tabindex="0">
 				{{ include('gameresult/_table_game.html.twig') }}
 			</div>
-			<div class="tab-pane" id="achievements-tab-pane" role="tabpanel" aria-labelledby="achievements-tab" tabindex="0">
+			<div class="tab-pane {% if tab == 'achievements' %} show active {% endif %}" id="achievements-tab-pane" role="tabpanel" aria-labelledby="achievements-tab" tabindex="0">
 				{{ include('achievement/_grid.html.twig') }}
 			</div>
-			<div class="tab-pane" id="stats-tab-pane" role="tabpanel" aria-labelledby="stats-tab" tabindex="0">
+			<div class="tab-pane {% if tab == 'stats' %} show active {% endif %}" id="stats-tab-pane" role="tabpanel" aria-labelledby="stats-tab" tabindex="0">
 				<div class="d-flex justify-content-center" id="player_chart">
 					Loading player counts...
 				</div>
