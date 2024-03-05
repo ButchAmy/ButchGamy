@@ -553,8 +553,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	public function getDailyPlayCountOn(DateTimeImmutable $dateTime): int
 	{
 		$count = 0;
-		$betweenStart = DateTimeImmutable::createFromFormat('j-M-Y', $dateTime->format('j-M-Y'));
-		$betweenEnd = $betweenStart->modify("+1 days");
+		$betweenStart = $dateTime->setTime(0, 0, 0);
+		$betweenEnd = $betweenStart->modify('+1 days');
 		foreach ($this->getGameResults() as $gameResult) {
 			if ($gameResult->getAchievedOn() >= $betweenStart && $gameResult->getAchievedOn() < $betweenEnd) {
 				$count++;
