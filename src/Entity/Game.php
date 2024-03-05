@@ -340,7 +340,8 @@ class Game
 		$scoreChart->getOptions()->setTitle('High Score History');
 		$scoreChart->getOptions()->setHeight(256);
 		$scoreChart->getOptions()->setWidth(1024);
-		$scoreChart->getOptions()->getHAxis()->setFormat('MMM d, yyyy');
+		$scoreChart->getOptions()->getHAxis()->setFormat('MMM d, y');
+		$scoreChart->getOptions()->getHAxis()->setShowTextEvery(7);
 		$scoreChart->getOptions()->setPointsVisible(true);
 		return $scoreChart;
 	}
