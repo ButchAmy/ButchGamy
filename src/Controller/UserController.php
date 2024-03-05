@@ -60,6 +60,7 @@ class UserController extends AbstractController
 			'games' => $user->getGamesDeveloped(),
 			'achievements' => $user->getAchievements(),
 			'achievementCounts' => $achievementCounts,
+			'activeChart' => $user->getActiveChart(),
 			'tab' => $tab,
         ]);
     }

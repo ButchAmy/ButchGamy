@@ -6,6 +6,8 @@ use App\Repository\ConversationRepository;
 use App\Repository\FriendRequestRepository;
 use App\Repository\GameResultRepository;
 use App\Repository\UserRepository;
+use CMEN\GoogleChartsBundle\GoogleCharts\Charts\ColumnChart;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -546,5 +548,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	public function getTestName(User $user): string
 	{
 		return $user->getUsername();
+	}
+
+	public function getDailyPlayCountOn(DateTimeImmutable $dateTime): int
+	{
+		$count = 0;
+		$betweenStart = DateTimeImmutable::createFromFormat('j-M-Y', $dateTime->format('j-M-Y'));
+		$betweenEnd = $betweenStart->modify("+1 days");
+		foreach ($this->getGameResults() as $gameResult) {
+			if ($gameResult->getAchievedOn() >= $betweenStart && $gameResult->getAchievedOn() < $betweenEnd) {
+				$count++;
+			}
+		}
+		return $count;
+	}
+
+	public function getActiveChart(): ColumnChart
+	{
+		$today = new DateTimeImmutable('now');
+		$activeChartData = [
+			['Time', 'Game Results'],
+			[$today->modify("-6 days")->format('M j, Y'), $this->getDailyPlayCountOn($today->modify("-6 days"))],
+			[$today->modify("-5 days")->format('M j, Y'), $this->getDailyPlayCountOn($today->modify("-5 days"))],
+			[$today->modify("-4 days")->format('M j, Y'), $this->getDailyPlayCountOn($today->modify("-4 days"))],
+			[$today->modify("-3 days")->format('M j, Y'), $this->getDailyPlayCountOn($today->modify("-3 days"))],
+			[$today->modify("-2 days")->format('M j, Y'), $this->getDailyPlayCountOn($today->modify("-2 days"))],
+			[$today->modify("-1 days")->format('M j, Y'), $this->getDailyPlayCountOn($today->modify("-1 days"))],
+			[$today->format('M j, Y'), $this->getDailyPlayCountOn($today)],
+		];
+		$activeChart = new ColumnChart();
+		$activeChart->getData()->setArrayToDataTable($activeChartData);
+		$activeChart->getOptions()->setTitle('Daily Activity');
+		$activeChart->getOptions()->setHeight(500);
+		$activeChart->getOptions()->setWidth(1000);
+		return $activeChart;
 	}
 }

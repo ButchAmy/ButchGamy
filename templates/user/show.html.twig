@@ -26,6 +26,11 @@
 			</div>
 			<div class="tab-pane {% if tab == 'stats' %} show active {% endif %}" id="stats-tab-pane" role="tabpanel" aria-labelledby="stats-tab" tabindex="0">
 				{{ include('gameresult/_table_user.html.twig') }}
+				<div class="d-flex justify-content-center" id="div_chart">
+					Loading activity...
+				</div>
+				<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+				<script type="text/javascript">{{ gc_draw(activeChart, 'div_chart') }}</script>
 			</div>
 		</div>
 	</div>

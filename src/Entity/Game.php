@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\GameRepository;
 use CMEN\GoogleChartsBundle\GoogleCharts\Charts\ColumnChart;
 use CMEN\GoogleChartsBundle\GoogleCharts\Charts\LineChart;
-use DateInterval;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -308,7 +307,7 @@ class Game
 	{
 		$today = new DateTimeImmutable('now');
 		$playerChartData = [
-			['Time', 'Player Count'],
+			['Time', 'Players'],
 			[$today->modify("-6 days")->format('M j, Y'), $this->getDailyPlayerCountOn($today->modify("-6 days"))],
 			[$today->modify("-5 days")->format('M j, Y'), $this->getDailyPlayerCountOn($today->modify("-5 days"))],
 			[$today->modify("-4 days")->format('M j, Y'), $this->getDailyPlayerCountOn($today->modify("-4 days"))],
@@ -344,5 +343,4 @@ class Game
 		$scoreChart->getOptions()->setPointsVisible(true);
 		return $scoreChart;
 	}
-
 }

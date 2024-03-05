@@ -6,7 +6,7 @@
 <div class="container my-3">
 	<div class="mb-3"><a href="{{ path('app_inbox_index') }}">Back to inbox</a></div>
 	{% for message in messages %}
-		<div class="card mb-3">
+		<div class="card mb-3 {% if message in unreadMessages %} border-primary {% endif %}">
 			<div class="card-body">
 				<div class="card-title">
 					<img src="{{ asset(message.userFrom.profilePic|default('assets/images/default.webp')) }}" height="28px" width="28px">

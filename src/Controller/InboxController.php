@@ -112,12 +112,20 @@ class InboxController extends AbstractController
             return $this->redirectToRoute('app_inbox_show', ['id' => $conversation->getId()], Response::HTTP_SEE_OTHER);
 		}
 
+		$unreadMessages = [];
+		foreach ($conversation->getMessages() as $message) {
+			if ($message->getUserTo() == $this->getUser() && $message->isUnread()) {
+				$unreadMessages[] = $message;
+			}
+		}
+
 		$conversation->markAsReadFor($this->getUser());
 		$entityManager->flush();
 
         return $this->render('inbox/show.html.twig', [
             'conversation' => $conversation,
 			'messages' => $conversation->getMessages(),
+			'unreadMessages' => $unreadMessages,
 			'user' => $conversation->getOtherUser($this->getUser()),
 			'friendStatus' => $conversation->getOtherUser($this->getUser())->getFriendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
         ]);
