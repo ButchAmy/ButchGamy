@@ -37,58 +37,24 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET', 'POST'])]
-	#[Route('/{id}/games', name: 'app_user_show_games', methods: ['GET', 'POST'])]
-    public function show_games(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, Request $request): Response
+	public function show(User $user, AchievementRepository $achievementRepository, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, Request $request): Response
     {
 		if (isset($_POST["request"])) {
 			$this->handleFriendRequest($user, $friendRequestRepository, $entityManager, $_POST["request"]);
 			return $this->redirectToRoute($request->attributes->get('_route'), $request->attributes->get('_route_params'));
 		}
 
-        return $this->render('user/show_games.html.twig', [
+		$achievementCounts = [];
+		foreach ($user->getAchievements() as $achievement) {
+			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getUniquePlayerCount();
+		}
+
+        return $this->render('user/show.html.twig', [
             'user' => $user,
 			'friendStatus' => $user->getFriendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
 			'games' => $user->getGamesDeveloped(),
-        ]);
-    }
-
-	#[Route('/{id}/achievements', name: 'app_user_show_achievements', methods: ['GET', 'POST'])]
-	public function show_achievements(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, AchievementRepository $achievementRepository, Request $request): Response
-    {
-		if (isset($_POST["request"])) {
-			$this->handleFriendRequest($user, $friendRequestRepository, $entityManager, $_POST["request"]);
-			return $this->redirectToRoute($request->attributes->get('_route'), $request->attributes->get('_route_params'));
-		}
-
-		$achievements = $user->getAchievements();
-		$achievementCounts = [];
-		foreach ($achievements as $achievement) {
-			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getPlayerCount();
-		}
-
-        return $this->render('user/show_achievements.html.twig', [
-            'user' => $user,
-			'friendStatus' => $user->getFriendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
-			'achievements' => $achievements,
+			'achievements' => $user->getAchievements(),
 			'achievementCounts' => $achievementCounts,
-        ]);
-    }
-
-	#[Route('/{id}/stats', name: 'app_user_show_stats', methods: ['GET', 'POST'])]
-	public function show_stats(User $user, FriendRequestRepository $friendRequestRepository, EntityManagerInterface $entityManager, Request $request): Response
-    {
-		if (isset($_POST["request"])) {
-			$this->handleFriendRequest($user, $friendRequestRepository, $entityManager, $_POST["request"]);
-			return $this->redirectToRoute($request->attributes->get('_route'), $request->attributes->get('_route_params'));
-		}
-
-		$playedCount = $user->getPlayedCount();
-
-        return $this->render('user/show_stats.html.twig', [
-            'user' => $user,
-			'friendStatus' => $user->getFriendStatus($this->getUser(), $friendRequestRepository), // 0 = Not friends, 1 = Sent friend request, 2 = Received friend request, 3 = Friends
-			'gameResults' => $user->getGameResults(),
-			'playedCount' => $playedCount,
         ]);
     }
 

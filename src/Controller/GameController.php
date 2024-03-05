@@ -68,8 +68,7 @@ class GameController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_game_show', methods: ['GET'])]
-	#[Route('/{id}/leaderboard', name: 'app_game_show_results', methods: ['GET'])]
-    public function show_results(Game $game) : Response
+	public function show(Game $game, AchievementRepository $achievementRepository) : Response
     {
 		if (!$game->isViewAllowedBy($this->getUser())) {
 			throw $this->createAccessDeniedException('You are not authorized to access this game!');
@@ -79,59 +78,20 @@ class GameController extends AbstractController
 		if (isset($_GET['sort'])) {
 			$sort = htmlspecialchars($_GET['sort']);
 		};
-        return $this->render('game/show_results.html.twig', [
+		$achievementCounts = [];
+		foreach ($game->getUniqueAchievements() as $achievement) {
+			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getUniquePlayerCount();
+		}
+
+        return $this->render('game/show.html.twig', [
             'game' => $game,
 			'developer' => $game->getDeveloper(),
 			'gameResults' => $game->getGameResults(),
 			'sort' => $sort,
-        ]);
-    }
-
-	#[Route('/{id}/achievements', name: 'app_game_show_achievements', methods: ['GET'])]
-    public function show_achievements(Game $game, AchievementRepository $achievementRepository, GameResultRepository $gameResultRepository): Response
-    {
-		if (!$game->isViewAllowedBy($this->getUser())) {
-			throw $this->createAccessDeniedException('You are not authorized to access this game!');
-		}
-
-		$achievements = $game->getUniqueAchievements();
-		$achievementCounts = [];
-		foreach ($achievements as $achievement) {
-			$achievementCounts[] = $achievement->getAchieverCount($achievementRepository) / $achievement->getGame()->getPlayerCount($gameResultRepository);
-		}
-		
-        return $this->render('game/show_achievements.html.twig', [
-            'game' => $game,
-			'developer' => $game->getDeveloper(),
-			'achievements' => $achievements,
+			'achievements' => $game->getUniqueAchievements(),
 			'achievementCounts' => $achievementCounts,
-        ]);
-    }
-
-	#[Route('/{id}/stats', name: 'app_game_show_stats', methods: ['GET'])]
-    public function show_stats(Game $game): Response
-    {
-		if (!$game->isViewAllowedBy($this->getUser())) {
-			throw $this->createAccessDeniedException('You are not authorized to access this game!');
-		}
-
-		$scoreChartData = [
-			['Time', 'Score', ['role' => 'annotation']],
-			[$game->getCreatedOn(), 0, null],
-		];
-		foreach ($game->getGameResults() as $gameResult) {
-			$scoreChartData[] = [$gameResult->getAchievedOn(), $gameResult->getScore(), $gameResult->getUser()->getUsername()];
-		};
-		$scoreChart = new LineChart();
-		$scoreChart->getData()->setArrayToDataTable($scoreChartData);
-		$scoreChart->getOptions()->setTitle('Score History');
-		$scoreChart->getOptions()->setHeight(500);
-		$scoreChart->getOptions()->setWidth(900);
-		$scoreChart->getOptions()->setPointsVisible(true);
-        return $this->render('game/show_stats.html.twig', [
-            'game' => $game,
-			'developer' => $game->getDeveloper(),
-			'scoreChart' => $scoreChart,
+			'playerChart' => $game->getPlayerChart(),
+			'scoreChart' => $game->getScoreChart(),
         ]);
     }
 
@@ -177,7 +137,7 @@ class GameController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_game_delete', methods: ['POST'])]
+    #[Route('/{id}/edit', name: 'app_game_delete', methods: ['POST'])]
     public function delete(Request $request, Game $game, EntityManagerInterface $entityManager): Response
     {
 		if (!$game->isEditAllowedBy($this->getUser())) {

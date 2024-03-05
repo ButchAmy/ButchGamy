@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\GameRepository;
-use App\Repository\GameResultRepository;
+use CMEN\GoogleChartsBundle\GoogleCharts\Charts\ColumnChart;
+use CMEN\GoogleChartsBundle\GoogleCharts\Charts\LineChart;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -247,7 +250,7 @@ class Game
         return $this;
     }
 
-	public function getPlayerCount(): int
+	public function getUniquePlayerCount(): int
 	{
 		$playerArray = [];
 		foreach ($this->getGameResults() as $gameResult) {
@@ -256,6 +259,19 @@ class Game
 			}
 		}
 		return count($playerArray);
+	}
+
+	public function getDailyPlayerCountOn(DateTimeImmutable $dateTime): int
+	{
+		$count = 0;
+		$betweenStart = DateTimeImmutable::createFromFormat('j-M-Y', $dateTime->format('j-M-Y'));
+		$betweenEnd = $betweenStart->modify("+1 days");
+		foreach ($this->getGameResults() as $gameResult) {
+			if ($gameResult->getAchievedOn() >= $betweenStart && $gameResult->getAchievedOn() < $betweenEnd) {
+				$count++;
+			}
+		}
+		return $count;
 	}
 
 	public function getHash(User $user): string
@@ -288,4 +304,45 @@ class Game
 		}
 		return false;
 	}
+	public function getPlayerChart(): ColumnChart
+	{
+		$today = new DateTimeImmutable('now');
+		$playerChartData = [
+			['Time', 'Player Count'],
+			[$today->modify("-6 days")->format('M j, Y'), $this->getDailyPlayerCountOn($today->modify("-6 days"))],
+			[$today->modify("-5 days")->format('M j, Y'), $this->getDailyPlayerCountOn($today->modify("-5 days"))],
+			[$today->modify("-4 days")->format('M j, Y'), $this->getDailyPlayerCountOn($today->modify("-4 days"))],
+			[$today->modify("-3 days")->format('M j, Y'), $this->getDailyPlayerCountOn($today->modify("-3 days"))],
+			[$today->modify("-2 days")->format('M j, Y'), $this->getDailyPlayerCountOn($today->modify("-2 days"))],
+			[$today->modify("-1 days")->format('M j, Y'), $this->getDailyPlayerCountOn($today->modify("-1 days"))],
+			[$today->format('M j, Y'), $this->getDailyPlayerCountOn($today)],
+		];
+		$playerChart = new ColumnChart();
+		$playerChart->getData()->setArrayToDataTable($playerChartData);
+		$playerChart->getOptions()->setTitle('Daily Player Count');
+		$playerChart->getOptions()->setHeight(500);
+		$playerChart->getOptions()->setWidth(1000);
+		return $playerChart;
+	}
+
+	public function getScoreChart(): LineChart
+	{
+		$scoreChartData = [
+			['Time', 'Score', ['role' => 'annotation']]
+		];
+		$scoreChartData[] = [$this->getCreatedOn(), 0, null];
+		foreach ($this->getGameResults() as $gameResult) {
+			if ($gameResult->getScore() > $scoreChartData[array_key_last($scoreChartData)][1]) {
+				$scoreChartData[] = [$gameResult->getAchievedOn(), $gameResult->getScore(), $gameResult->getUser()->getUsername()];
+			}
+		};
+		$scoreChart = new LineChart();
+		$scoreChart->getData()->setArrayToDataTable($scoreChartData);
+		$scoreChart->getOptions()->setTitle('High Score History');
+		$scoreChart->getOptions()->setHeight(500);
+		$scoreChart->getOptions()->setWidth(1000);
+		$scoreChart->getOptions()->setPointsVisible(true);
+		return $scoreChart;
+	}
+
 }

@@ -13,16 +13,8 @@
 				<button type="submit" class="btn btn-primary">Filter</button>
 			</div>
 		</form>
-		<p class="container text-center">
-			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
-			{% for user in users|sort((a, b) => a.username <=> b.username) %}
-				<div class="col">
-					<img src="{{ asset(user.profilePic|default('assets/images/default.webp')) }}" height="50px" width="50px">
-					<span class="h1 align-bottom"><a href="{{ path('app_user_show', {'id': user.id}) }}">{{ user.username }}</a></span>
-				</div>
-			{% else %}
-				<div class="col">No users matched your filter.</div>
-			{% endfor %}
+		<p class="container">
+			{{ include('user/_grid.html.twig') }}
 		</p>
 	</div>
 {% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ButchGamy - {{ game.title }}{% endblock %}
+
+{% block body %}
+	<div class="container my-3">
+		<div><a href="{{ path('app_homepage_all') }}">Back to index</a></div>
+		{{ include('game/_show.html.twig') }}
+		<ul class="nav nav-tabs my-3" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="leaderboard-tab" data-bs-toggle="tab" data-bs-target="#leaderboard-tab-pane" type="button" role="tab" aria-controls="leaderboard-tab-pane" aria-selected="true">Leaderboard</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="achievements-tab" data-bs-toggle="tab" data-bs-target="#achievements-tab-pane" type="button" role="tab" aria-controls="achievements-tab-pane" aria-selected="false">Achievements</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-tab-pane" type="button" role="tab" aria-controls="stats-tab-pane" aria-selected="false">Stats</button>
+			</li>
+		</ul>
+		<div class="tab-content container" id="myTabContent">
+			<div class="tab-pane show active" id="leaderboard-tab-pane" role="tabpanel" aria-labelledby="leaderboard-tab" tabindex="0">
+				{{ include('gameresult/_table_game.html.twig') }}
+			</div>
+			<div class="tab-pane" id="achievements-tab-pane" role="tabpanel" aria-labelledby="achievements-tab" tabindex="0">
+				{{ include('achievement/_grid.html.twig') }}
+			</div>
+			<div class="tab-pane" id="stats-tab-pane" role="tabpanel" aria-labelledby="stats-tab" tabindex="0">
+				<div class="d-flex justify-content-center" id="player_chart">
+					Loading player counts...
+				</div>
+				<div class="d-flex justify-content-center" id="score_chart">
+					Loading high scores...
+				</div>
+				<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+				<script type="text/javascript">{{ gc_draw(playerChart, 'player_chart') }}</script>
+				<script type="text/javascript">{{ gc_draw(scoreChart, 'score_chart') }}</script>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% import 'macros.html.twig' as macros %}
+<table class="table">
+	<thead>
+		<tr>
+			<th></th>
+			<th>User</th>
+			<th {% if sort == 'score' %} class="table-active" {% endif %}><a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}?sort=score">Score</a></th>
+			<th {% if sort == 'time' %} class="table-active" {% endif %}><a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}?sort=time">Time</a></th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if sort == 'score' %}
+			{% for result in gameResults|sort((a, b) => b.score <=> a.score)|slice(0, 9) %}
+				<tr>
+					<th>{{ loop.index }}</th>
+					<td><a href="{{ path('app_user_show', {'id': result.user.id}) }}">{{ result.user.username }}</a></td>
+					<td>{{ result.score }}</td>
+					<td>{{ macros.secondsToMinutes(result.time) }}</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="4" class="text-center">{{ emptyMessage|default('Nobody has played this game yet - get to it!') }}</td>
+				</tr>
+			{% endfor %}
+		{% elseif sort == 'time' %}
+			{% for result in gameResults|sort((a, b) => a.time <=> b.time)|slice(0, 9) %}
+				<tr>
+					<th>{{ loop.index }}</th>
+					<td><a href="{{ path('app_user_show', {'id': result.user.id}) }}">{{ result.user.username }}</a></td>
+					<td>{{ result.score }}</td>
+					<td>{{ macros.secondsToMinutes(result.time) }}</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="4" class="text-center">{{ emptyMessage|default('Nobody has played this game yet - get to it!') }}</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			{% for result in gameResults|sort((a, b) => random(-1,1))|slice(0, 9) %}
+				<tr>
+					<th>#</th>
+					<td><a href="{{ path('app_user_show', {'id': result.user.id}) }}">{{ result.user.username }}</a></td>
+					<td>{{ result.score }}</td>
+					<td>{{ macros.secondsToMinutes(result.time) }}</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="4" class="text-center">{{ emptyMessage|default('Nobody has played this game yet - get to it!') }}</td>
+				</tr>
+			{% endfor %}
+		{% endif %}
+	</tbody>
+</table>

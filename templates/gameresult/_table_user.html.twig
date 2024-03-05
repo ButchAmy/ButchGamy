@@ -1,0 +1,27 @@
+{% import 'macros.html.twig' as macros %}
+<table class="table">
+	<tbody>
+		<tr>
+			<th>Number of games played:</th>
+			<td>{{ user.playedCount }}</td>
+		</tr>
+		{% if user.gameResults is not empty %}
+			<tr>
+				<th>Best score in any game:</th>
+				<td>
+					{{ user.gameResults|sort((a, b) => b.score <=> a.score)|first.score }}
+					(in <a href="{{ path('app_game_show', {'id': user.gameResults|sort((a, b) => b.score <=> a.score)|first.game.id}) }}">
+						{{ user.gameResults|sort((a, b) => b.score <=> a.score)|first.game.title }}</a>)
+				</td>
+			</tr>
+			<tr>
+				<th>Best time in any game:</th>
+				<td>
+					{{ macros.secondsToMinutes(user.gameResults|sort((a, b) => a.time <=> b.time)|first.time) }}
+					(in <a href="{{ path('app_game_show', {'id': user.gameResults|sort((a, b) => a.time <=> b.time)|first.game.id}) }}">
+						{{ user.gameResults|sort((a, b) => a.time <=> b.time)|first.game.title }}</a>)
+				</td>
+			</tr>
+		{% endif %}
+	</tbody>
+</table>
