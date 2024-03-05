@@ -318,9 +318,9 @@ class Game
 		];
 		$playerChart = new ColumnChart();
 		$playerChart->getData()->setArrayToDataTable($playerChartData);
-		$playerChart->getOptions()->setTitle('Daily Player Count');
-		$playerChart->getOptions()->setHeight(500);
-		$playerChart->getOptions()->setWidth(1000);
+		$playerChart->getOptions()->setTitle('Daily Activity');
+		$playerChart->getOptions()->setHeight(256);
+		$playerChart->getOptions()->setWidth(1024);
 		return $playerChart;
 	}
 
@@ -338,8 +338,8 @@ class Game
 		$scoreChart = new LineChart();
 		$scoreChart->getData()->setArrayToDataTable($scoreChartData);
 		$scoreChart->getOptions()->setTitle('High Score History');
-		$scoreChart->getOptions()->setHeight(500);
-		$scoreChart->getOptions()->setWidth(1000);
+		$scoreChart->getOptions()->setHeight(256);
+		$scoreChart->getOptions()->setWidth(1024);
 		$scoreChart->getOptions()->setPointsVisible(true);
 		return $scoreChart;
 	}

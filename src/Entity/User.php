@@ -567,7 +567,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	{
 		$today = new DateTimeImmutable('now');
 		$activeChartData = [
-			['Time', 'Game Results'],
+			['Time', 'Plays'],
 			[$today->modify("-6 days")->format('M j, Y'), $this->getDailyPlayCountOn($today->modify("-6 days"))],
 			[$today->modify("-5 days")->format('M j, Y'), $this->getDailyPlayCountOn($today->modify("-5 days"))],
 			[$today->modify("-4 days")->format('M j, Y'), $this->getDailyPlayCountOn($today->modify("-4 days"))],
@@ -579,8 +579,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 		$activeChart = new ColumnChart();
 		$activeChart->getData()->setArrayToDataTable($activeChartData);
 		$activeChart->getOptions()->setTitle('Daily Activity');
-		$activeChart->getOptions()->setHeight(500);
-		$activeChart->getOptions()->setWidth(1000);
+		$activeChart->getOptions()->setHeight(256);
+		$activeChart->getOptions()->setWidth(1024);
 		return $activeChart;
 	}
 }
